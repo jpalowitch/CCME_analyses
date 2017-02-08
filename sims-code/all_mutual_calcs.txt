@@ -1,0 +1,9 @@
+K:/ccm_paper/stats/ccme/sims/sbm_sims/experiment1final/mutual_calc.txt
+K:/ccm_paper/stats/ccme/sims/sbm_sims/experiment2final/mutual_calc.txt
+K:/ccm_paper/stats/ccme/sims/sbm_sims/experiment3final/mutual_calc.txt
+K:/ccm_paper/stats/ccme/sims/sbm_sims/experiment4final/mutual_calc.txt
+K:/ccm_paper/stats/ccme/sims/sbm_sims/experiment5final/mutual_calc.txt
+K:/ccm_paper/stats/ccme/sims/sbm_sims/experiment6final/mutual_calc.txt
+K:/ccm_paper/stats/ccme/sims/sbm_sims/experiment7final/mutual_calc.txt
+K:/ccm_paper/stats/ccme/sims/sbm_sims/experiment8final/mutual_calc.txt
+K:/ccm_paper/stats/ccme/sims/sbm_sims/experiment9final/mutual_calc.txt

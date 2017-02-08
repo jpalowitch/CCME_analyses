@@ -1,0 +1,6 @@
+cp -R methodFiles/OSLOM2/* sims-results/experiment1/OSLOM2
+cd sims-results/experiment1/OSLOM2
+chmod 744 compile_all.sh
+./compile_all.sh
+gnome-terminal -e "bash run_script.txt"
+cd ../../../

@@ -1,0 +1,9 @@
+R sims-code/make params
+R sims-code/make sims
+bash sims-code/run oslom
+bash sims-code/run slpa
+bash sims-code/run_methods
+R sims-code/make_comm_dats
+bash sims-code/all_mutual_calcs.txt
+R sims-code/plot sims
+
