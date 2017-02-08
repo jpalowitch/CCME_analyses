@@ -70,7 +70,12 @@ for (exper in run_expers) {
       
       if (runIGRAPH) {
         
-        source("sims/sbm_sims/format_sbm.R")
+        # Formatting the SBM
+        G <- graph.edgelist(as.matrix(sbm$edge_list[ , c(1:2)]), directed = FALSE)
+        E(G)$weight <- sbm$edge_list$weight
+        results0 <- list("communities" = NULL,
+                         "background" = NULL)
+        node_list <- unique(as.vector(unlist(sbm$edge_list[ , c(1:2)])))
         
         # WALKTRAP
         
@@ -86,8 +91,13 @@ for (exper in run_expers) {
             )))
           }
           
+          # Formatting and saving results
           ig_results <- cluster_walktrap(G)
-          source("sims/sbm_sims/format_results.R")
+          results <- results0
+          results$communities <- lapply(unique(ig_results$membership),
+                                        function (i) 
+                                          which(ig_results$membership == i))
+          results$background <- setdiff(node_list, unlist(results$communities))
           save(results, file = file.path(curr_dir_p_rep, "walktrap.RData"))
         
         # INFOMAP
@@ -104,27 +114,14 @@ for (exper in run_expers) {
             )))
           }
           
+          # Formatting and saving results
           ig_results <- cluster_infomap(G)
-          source("sims/sbm_sims/format_results.R")
+          results <- results0
+          results$communities <- lapply(unique(ig_results$membership),
+                                        function (i) 
+                                          which(ig_results$membership == i))
+          results$background <- setdiff(node_list, unlist(results$communities))
           save(results, file = file.path(curr_dir_p_rep, "infomap.RData"))
-        
-        # LABEL PROP
-          
-          # Draw random seed and save
-          if (redrawSeeds) {
-            seed_draw <- sample(1e6, 1)
-            writeLines(as.character(seed_draw), 
-                       con = file.path(curr_dir_p_rep, "label_prop_seed.txt"))
-            set.seed(seed_draw)
-          } else {
-            set.seed(as.numeric(readLines(file.path(curr_dir_p_rep, 
-                                                    "label_prop_seed.txt")
-            )))
-          }
-          
-          ig_results <- cluster_label_prop(G)
-          source("sims/sbm_sims/format_results.R")
-          save(results, file = file.path(curr_dir_p_rep, "label_prop.RData"))
         
         # FAST GREEDY
           
@@ -140,8 +137,13 @@ for (exper in run_expers) {
             )))
           }
           
+          # Formatting and saving results
           ig_results <- cluster_fast_greedy(G)
-          source("sims/sbm_sims/format_results.R")
+          results <- results0
+          results$communities <- lapply(unique(ig_results$membership),
+                                        function (i) 
+                                          which(ig_results$membership == i))
+          results$background <- setdiff(node_list, unlist(results$communities))
           save(results, file = file.path(curr_dir_p_rep, "fast_greedy.RData"))
         
       }
