@@ -1,5 +1,8 @@
 source("sims-code/sbm_funs3.R")
 
+# How many R consoles with no more than 1.5 gigs of memory can you run at once?
+ncons <- 3
+
 # For the  experiments, do you want to shove the dec vec up to one?
 shove_dec <- TRUE
 
@@ -9,8 +12,21 @@ par_seq_dec <- 1:par_divs / (par_divs + 1)
 par_seq  <- round(100 * (1:par_divs / (par_divs + 1)))
 par_dirs <- as.character(par_seq)
 
+# Give the names of your experiments: must be manually entered.
+total_expers <- c("1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9")
 
-# Experiment 1 ------------------------------------------------------------
+if (!dir.exists("sims-results/sbm-par-lists"))
+  dir.create("sims-results/sbm-par-lists", recursive = TRUE)
+
+# Experiment 1 -----------------------------------------------------------------
 
 main_text <- "Increase N"
 par_list <- make_param_list2()
@@ -34,7 +50,7 @@ save(par_list,
      par_dirs,
      file = "sims-results/sbm-par-lists/experiment1.RData")
 
-# Experiment 2 ------------------------------------------------------------
+# Experiment 2 -----------------------------------------------------------------
 
 main_text <- "Overall community sizes"
 par_list <- make_param_list2()
@@ -55,7 +71,7 @@ save(par_list,
      axis_par_string,
      file = "sims-results/sbm-par-lists/experiment2.RData")
 
-# Experiment 3 ------------------------------------------------------------
+# Experiment 3 -----------------------------------------------------------------
 
 main_text <- "Shrink degs"
 par_list <- make_param_list2()
@@ -76,7 +92,7 @@ save(par_list,
      par_dirs,
      file = "sims-results/sbm-par-lists/experiment3.RData")
 
-# Experiment 4 ------------------------------------------------------------
+# Experiment 4 -----------------------------------------------------------------
 
 main_text <- "Increase edge signal"
 par_list <- make_param_list2()
@@ -98,7 +114,7 @@ save(par_list,
      par_dirs,
      file = "sims-results/sbm-par-lists/experiment4.RData")
 
-# Experiment 5 ------------------------------------------------------------
+# Experiment 5 -----------------------------------------------------------------
 
 main_text <- "Increase weight signal"
 par_list <- make_param_list2()
@@ -120,7 +136,7 @@ save(par_list,
      par_dirs,
      file = "sims-results/sbm-par-lists/experiment5.RData")
 
-# Experiment 6 ------------------------------------------------------------
+# Experiment 6 -----------------------------------------------------------------
 
 main_text <- "Increase edge and weight signal"
 par_list <- make_param_list2()
@@ -146,7 +162,7 @@ save(par_list,
      file = "sims-results/sbm-par-lists/experiment6.RData")
 
 
-# Experiment 7 ------------------------------------------------------------
+# Experiment 7 -----------------------------------------------------------------
 
 main_text <- "Increase # on"
 par_list <- make_param_list2(om = 2)
@@ -168,7 +184,7 @@ save(par_list,
      par_dirs,
      file = "sims-results/sbm-par-lists/experiment7.RData")
 
-# Experiment 8 ------------------------------------------------------------
+# Experiment 8 -----------------------------------------------------------------
 
 main_text <- "Increase om"
 par_list <- make_param_list2(on = 500)
@@ -192,7 +208,7 @@ save(par_list,
      par_dirs,
      file = "sims-results/sbm-par-lists/experiment8.RData")
 
-# Experiment 9 ------------------------------------------------------------
+# Experiment 9 -----------------------------------------------------------------
 
 par_divs <- 19
 par_seq <- seq(5, 95, 5)
@@ -219,3 +235,98 @@ save(par_list,
      par_divs,
      par_dirs,
      file = "sims-results/sbm-par-lists/experiment9.RData")
+
+# ------------------------------------------------------------------------------
+# Writing run scripts
+# ------------------------------------------------------------------------------
+if (!dir.exists("sims-results/run-code"))
+  dir.create("sims-results/run-code")
+
+# Saving config files for future runs
+writeLines(total_expers, "sims-results/exper-names.txt")
+
+# Writing batch run files
+batches <- rep(1:ncons, each = ceiling(length(total_expers) / ncons))
+batches <- batches[1:length(total_expers)]
+batches <- lapply(1:ncons, function (i) which(batches == i))
+
+batch_script_dir <- "sims-results/run-code/batch-scripts"
+if (!dir.exists(batch_script_dir))
+  dir.create(batch_script_dir)
+
+# Initializing scripts to run batches, and logfiles
+sbmfn0 <- paste0("sims-results/run-code/make-sbm-sims")
+oslomfn0 <- paste0("sims-results/run-code/run-oslom")
+file.create(paste0(c(sbmfn0, oslomfn0), ".txt"))
+file.create(paste0(c(sbmfn0, oslomfn0), "_log.txt"))
+
+for (b in 1:ncons) {
+  
+  batch <- batches[[b]]
+  batchname <- paste0("batch", b)
+  
+  # Initializing batch files
+  sbmfn <- file.path(batch_script_dir, paste0("make-sbm-sims-", batchname))
+  oslomfn <- file.path(batch_script_dir, paste0("run_oslom-", batchname))
+  slpawfn <- file.path(batch_script_dir, paste0("run_slpaw-", batchname))
+  rmethfn <- file.path(batch_script_dir, paste0("run_rmeth-", batchname))
+  file.create(paste0(c(sbmfn, oslomfn, slpawfn, rmethfn), ".txt"))
+  file.create(paste0(c(sbmfn, oslomfn, slpawfn, rmethfn), "_log.txt"))
+  
+  # Writing on script to run sim batches
+  fileConn <- file(paste0(sbmfn0, ".txt"), "a")
+  writeLines(paste("Rscript --vanilla sims-code/make_sbm_sims.R", 
+                   b, min(batch), max(batch),
+                   "1> /dev/null",
+                   "2>", paste0(sbmfn, "_log.txt"), "&"),
+             fileConn)
+  close(fileConn)
+  
+  # Writing on script to run oslom batches
+  fileConn <- file(paste0(oslomfn0, ".txt"), "a")
+  writeLines(paste("bash", paste0(oslomfn, ".txt"),
+                   "1> /dev/null",
+                   "2>", paste0(oslomfn, "_log.txt"), "&"),
+             fileConn)
+  close(fileConn)
+  
+  # Writing batch scripts to run OSLOM
+  fileConn <- file(oslomfn, "a")
+  
+  for (exper in batch) {
+    
+    exper_string <- paste0("experiment", total_expers[exper])
+    
+    # Finding the folder
+    root_dir <- file.path("sims-results", exper_string)
+
+    # Coping OSLOM files
+    writeLines(paste0("cp -R methodFiles/OSLOM2/* ", 
+                      file.path(root_dir, "OSLOM2")),
+               fileConn)
+    
+    # Set the directory
+    writeLines(paste0("cd ", file.path(root_dir, "OSLOM2")),
+               fileConn)
+    
+    # Compiling OSLOM
+    writeLines("chmod 744 compile_all.sh && ./compile_all.sh",
+               fileConn)
+    
+    # create the log file
+    writeLines('touch log.txt',
+               fileConn)
+    
+    # Run the run_script
+    writeLines('bash run_script.txt 1> /dev/null 2> log.txt &',
+               fileConn)
+    
+    # Re-set directory
+    writeLines(paste0("cd ../../../"),
+               fileConn)
+    
+  }
+  close(fileConn)
+  
+}
+

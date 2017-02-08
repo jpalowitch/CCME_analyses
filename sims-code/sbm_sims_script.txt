@@ -1,5 +1,5 @@
-R sims-code/make params
-R sims-code/make sims
+Rscript sims-code/make_par_lists.R
+bash make-sims.txt
 bash sims-code/run oslom
 bash sims-code/run slpa
 bash sims-code/run_methods
