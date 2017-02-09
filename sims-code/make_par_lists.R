@@ -291,7 +291,7 @@ for (b in 1:ncons) {
   close(fileConn)
   
   # Writing batch scripts to run OSLOM
-  fileConn <- file(oslomfn, "a")
+  fileConn <- file(paste0(oslomfn, ".txt"), "a")
   
   for (exper in batch) {
     
