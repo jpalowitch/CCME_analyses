@@ -2,6 +2,7 @@ source("sims-code/sbm_funs3.R")
 
 # How many R consoles with no more than 1.5 gigs of memory can you run at once?
 ncons <- 3
+ncons_slpa <- 1
 
 # For the  experiments, do you want to shove the dec vec up to one?
 shove_dec <- TRUE
@@ -257,8 +258,9 @@ if (!dir.exists(batch_script_dir))
 # Initializing scripts to run batches, and logfiles
 sbmfn0 <- paste0("sims-results/run-code/make-sbm-sims")
 oslomfn0 <- paste0("sims-results/run-code/run-oslom")
-file.create(paste0(c(sbmfn0, oslomfn0), ".txt"))
-file.create(paste0(c(sbmfn0, oslomfn0), "_log.txt"))
+rmethfn0 <- paste0("sims-results/run-code/run-rmeth")
+file.create(paste0(c(sbmfn0, oslomfn0, rmethfn0), ".txt"))
+file.create(paste0(c(sbmfn0, oslomfn0, rmethfn0), "_log.txt"))
 
 for (b in 1:ncons) {
   
@@ -287,6 +289,16 @@ for (b in 1:ncons) {
   writeLines(paste("bash", paste0(oslomfn, ".txt"),
                    "1> /dev/null",
                    "2>", paste0(oslomfn, "_log.txt"), "&"),
+             fileConn)
+  close(fileConn)
+  
+   
+  # Writing on script to run R methods
+  fileConn <- file(paste0(rmethfn0, ".txt"), "a")
+  writeLines(paste("Rscript --vanilla sims-code/run_R_methods.R",
+                   b, min(batch), max(batch),
+                   "1> /dev/null",
+                   "2>", paste0(rmethfn, "_log.txt"), "&"),
              fileConn)
   close(fileConn)
   
@@ -323,6 +335,61 @@ for (b in 1:ncons) {
     
     # Re-set directory
     writeLines(paste0("cd ../../../"),
+               fileConn)
+    
+  }
+  close(fileConn)
+  
+}
+
+
+# Writing batch2 run files
+batches2 <- rep(1:ncons_slpa, each = ceiling(length(total_expers) / ncons_slpa))
+batches2 <- batches2[1:length(total_expers)]
+batches2 <- lapply(1:ncons_slpa, function (i) which(batches2 == i))
+
+# Initializing scripts to run non-R batches, and logfiles
+slpawfn0 <- paste0("sims-results/run-code/run-slpa")
+file.create(paste0(c(slpawfn0), ".txt"))
+file.create(paste0(c(slpawfn0), "_log.txt"))
+
+for (b in 1:ncons_slpa) {
+  
+  batch <- batches2[[b]]
+  batchname <- paste0("batch", b)
+  
+  # Initializing batch files
+  slpawfn <- file.path(batch_script_dir, paste0("run_slpaw-", batchname))
+  file.create(paste0(c(slpawfn), ".txt"))
+  file.create(paste0(c(slpawfn), "_log.txt"))
+  
+  # Writing on script to run slpa batches
+  fileConn <- file(paste0(slpawfn0, ".txt"), "a")
+  writeLines(paste("bash", paste0(slpawfn, ".txt"),
+                   "1> /dev/null",
+                   "2>", paste0(slpawfn, "_log.txt"), "&"),
+             fileConn)
+  close(fileConn)
+  
+  # Writing batch scripts to run SLPA
+  fileConn <- file(paste0(slpawfn, ".txt"), "a")
+  
+  for (exper in batch) {
+    
+    exper_string <- paste0("experiment", total_expers[exper])
+    
+    # Finding the folder
+    root_dir <- file.path("sims-results", exper_string)
+    
+    # Set log and run file destination
+    runfile <- file.path(root_dir, 'slpa_run_script.bat')
+    logfile <- file.path(root_dir, 'slpa_run_script_log.txt')
+    
+    # create the log file
+    writeLines(paste('touch', logfile), fileConn)
+    
+    # Run the run_script
+    writeLines(paste('bash', runfile, '1> /dev/null 2>', logfile, '&'),
                fileConn)
     
   }

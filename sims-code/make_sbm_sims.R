@@ -1,5 +1,3 @@
-Args = commandArgs(TRUE)
-
 source("sims-code/sbm_funs3.R")
 
 total_expers <- readLines("sims-results/exper-names.txt")

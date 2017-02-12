@@ -1,28 +1,28 @@
+Args = commandArgs(TRUE)
 library(igraph)
 library(Matrix)
 source("sims-code/sbm_funs3.R")
 source("methodFiles/ccme/CCME.R")
 
-# Specify whether or not to re-draw seeds
-redrawSeeds <- TRUE
+total_expers <- readLines("sims-results/exper-names.txt")
 
-# Specify whether or not to run CCME
-runCCME <- TRUE
+if (length(Args) < 2) {
+  batch_name <- "0"
+  first_exper <- 1
+  last_exper <- 9
+  redrawSeeds <- FALSE
+  runCCME <- FALSE
+  runIGRAPH <- FALSE
+} else {
+  batch_name <- Args[1]
+  first_exper <- as.numeric(Args[2])
+  last_exper <- as.numeric(Args[3])
+  redrawSeeds <- TRUE
+  runCCME <- TRUE
+  runIGRAPH <- TRUE
+}
 
-# Specify whether or not to run igraph methods
-runIGRAPH <- TRUE
-
-total_expers <- c("1",
-                  "2",
-                  "3",
-                  "4",
-                  "5",
-                  "6",
-                  "7",
-                  "8",
-                  "9")
-
-run_expers <- 1
+run_expers <- first_exper:last_exper
 
 # This should consistent throughout the experiments
 # (and match the same variable in sims/lfr/make_lfr_sims.R)
