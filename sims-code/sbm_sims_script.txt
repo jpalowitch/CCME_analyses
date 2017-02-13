@@ -1,9 +1,14 @@
 Rscript sims-code/make_par_lists.R
-bash make-sims.txt
-bash sims-code/run oslom
-bash sims-code/run slpa
-bash sims-code/run_methods
-R sims-code/make_comm_dats
+bash sims-results/make-sbm-sims.txt
+wait
+bash sims-results/run-oslom.txt
+wait
+bash sims-results/run-slpa.txt
+wait
+bash sims-results/run-rmeth.txt
+Rscript sims-code/extract_all_nonCCME.R
+Rscript sims-code/make_comm_dats.R
+-----
 bash sims-code/all_mutual_calcs.txt
 R sims-code/plot sims
 
