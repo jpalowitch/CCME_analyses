@@ -8,11 +8,11 @@ source("sims-code/sbm_funs3.R")
 source("mod_funs.R")
 
 # Set method names:
-methNames = c("ccme", "oslom", "slpa", "fast_greedy", "walktrap", "infomap")
+methNames = c("ccme", "oslom", "slpa", "fast_greedy", "walktrap", "infomap", "ccme_fast")
 
 # Set which methods to plot and their plot names
-plot_meths <- c(4:6, 2, 3, 1)
-plot_names <- c("FastGreedy", "Walktrap", "Infomap", "OSLOM", "SLPAw", "CCME")
+plot_meths <- c(4:6, 2, 3, 1, 7)
+plot_names <- c("FastGreedy", "Walktrap", "Infomap", "OSLOM", "SLPAw", "CCME", "CCME-fast")
 
 # Do mod?
 doMod <- FALSE

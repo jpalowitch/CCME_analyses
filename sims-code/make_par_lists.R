@@ -1,8 +1,9 @@
 source("sims-code/sbm_funs3.R")
 
-# How many R consoles with no more than 1.5 gigs of memory can you run at once?
-ncons <- 3
-ncons_slpa <- 1
+# How many instances can you run at once? Default values are recommended for home computers
+nrun_r <- 3
+nrun_oslom <- 2
+nrun_slpa <- 1
 
 # For the  experiments, do you want to shove the dec vec up to one?
 shove_dec <- TRUE
@@ -15,8 +16,6 @@ par_dirs <- as.character(par_seq)
 
 # Give the names of your experiments: must be manually entered.
 total_expers <- c("1",
-                  "2",
-                  "3",
                   "4",
                   "5",
                   "6",
@@ -246,34 +245,35 @@ if (!dir.exists("sims-results/run-code"))
 # Saving config files for future runs
 writeLines(total_expers, "sims-results/exper-names.txt")
 
-# Writing batch run files
-batches <- rep(1:ncons, each = ceiling(length(total_expers) / ncons))
-batches <- batches[1:length(total_expers)]
-batches <- lapply(1:ncons, function (i) which(batches == i))
-
 batch_script_dir <- "sims-results/run-code/batch-scripts"
 if (!dir.exists(batch_script_dir))
   dir.create(batch_script_dir)
 
+
+# ------------------------------------------------------------------------------
+# Writing R batch files
+
+# Writing batch run files
+batches <- rep(1:nrun_r, each = ceiling(length(total_expers) / nrun_r))
+batches <- batches[1:length(total_expers)]
+batches <- lapply(1:nrun_r, function (i) which(batches == i))
+
 # Initializing scripts to run batches, and logfiles
 sbmfn0 <- paste0("sims-results/run-code/make-sbm-sims")
-oslomfn0 <- paste0("sims-results/run-code/run-oslom")
 rmethfn0 <- paste0("sims-results/run-code/run-rmeth")
-file.create(paste0(c(sbmfn0, oslomfn0, rmethfn0), ".txt"))
-file.create(paste0(c(sbmfn0, oslomfn0, rmethfn0), "_log.txt"))
+file.create(paste0(c(sbmfn0, rmethfn0), ".txt"))
+file.create(paste0(c(sbmfn0, rmethfn0), "_log.txt"))
 
-for (b in 1:ncons) {
+for (b in 1:nrun_r) {
   
   batch <- batches[[b]]
   batchname <- paste0("batch", b)
   
   # Initializing batch files
   sbmfn <- file.path(batch_script_dir, paste0("make-sbm-sims-", batchname))
-  oslomfn <- file.path(batch_script_dir, paste0("run_oslom-", batchname))
-  slpawfn <- file.path(batch_script_dir, paste0("run_slpaw-", batchname))
   rmethfn <- file.path(batch_script_dir, paste0("run_rmeth-", batchname))
-  file.create(paste0(c(sbmfn, oslomfn, slpawfn, rmethfn), ".txt"))
-  file.create(paste0(c(sbmfn, oslomfn, slpawfn, rmethfn), "_log.txt"))
+  file.create(paste0(c(sbmfn, rmethfn), ".txt"))
+  file.create(paste0(c(sbmfn, rmethfn), "_log.txt"))
   
   # Writing on script to run sim batches
   fileConn <- file(paste0(sbmfn0, ".txt"), "a")
@@ -283,15 +283,6 @@ for (b in 1:ncons) {
                    "2>", paste0(sbmfn, "_log.txt"), "&"),
              fileConn)
   close(fileConn)
-  
-  # Writing on script to run oslom batches
-  fileConn <- file(paste0(oslomfn0, ".txt"), "a")
-  writeLines(paste("bash", paste0(oslomfn, ".txt"),
-                   "1> /dev/null",
-                   "2>", paste0(oslomfn, "_log.txt"), "&"),
-             fileConn)
-  close(fileConn)
-  
    
   # Writing on script to run R methods
   fileConn <- file(paste0(rmethfn0, ".txt"), "a")
@@ -299,6 +290,39 @@ for (b in 1:ncons) {
                    b, min(batch), max(batch),
                    "1> /dev/null",
                    "2>", paste0(rmethfn, "_log.txt"), "&"),
+             fileConn)
+  close(fileConn)
+  
+}
+
+#-------------------------------------------------------------------------------
+# Writing OSLOM batch files
+
+# Writing batch run files
+batches <- rep(1:nrun_oslom, each = ceiling(length(total_expers) / nrun_oslom))
+batches <- batches[1:length(total_expers)]
+batches <- lapply(1:nrun_oslom, function (i) which(batches == i))
+
+# Initializing scripts to run batches, and logfiles
+oslomfn0 <- paste0("sims-results/run-code/run-oslom")
+file.create(paste0(c(oslomfn0), ".txt"))
+file.create(paste0(c(oslomfn0), "_log.txt"))
+
+for (b in 1:nrun_oslom) {
+  
+  batch <- batches[[b]]
+  batchname <- paste0("batch", b)
+  
+  # Initializing batch files
+  oslomfn <- file.path(batch_script_dir, paste0("run_oslom-", batchname))
+  file.create(paste0(c(oslomfn), ".txt"))
+  file.create(paste0(c(oslomfn), "_log.txt"))
+  
+  # Writing on script to run oslom batches
+  fileConn <- file(paste0(oslomfn0, ".txt"), "a")
+  writeLines(paste("bash", paste0(oslomfn, ".txt"),
+                   "1> /dev/null",
+                   "2>", paste0(oslomfn, "_log.txt"), "&"),
              fileConn)
   close(fileConn)
   
@@ -342,18 +366,21 @@ for (b in 1:ncons) {
   
 }
 
+#-------------------------------------------------------------------------------
+# Writing SLPA batch files
+
 
 # Writing batch2 run files
-batches2 <- rep(1:ncons_slpa, each = ceiling(length(total_expers) / ncons_slpa))
+batches2 <- rep(1:nrun_slpa, each = ceiling(length(total_expers) / nrun_slpa))
 batches2 <- batches2[1:length(total_expers)]
-batches2 <- lapply(1:ncons_slpa, function (i) which(batches2 == i))
+batches2 <- lapply(1:nrun_slpa, function (i) which(batches2 == i))
 
 # Initializing scripts to run non-R batches, and logfiles
 slpawfn0 <- paste0("sims-results/run-code/run-slpa")
 file.create(paste0(c(slpawfn0), ".txt"))
 file.create(paste0(c(slpawfn0), "_log.txt"))
 
-for (b in 1:ncons_slpa) {
+for (b in 1:nrun_slpa) {
   
   batch <- batches2[[b]]
   batchname <- paste0("batch", b)

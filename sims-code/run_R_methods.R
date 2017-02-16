@@ -28,6 +28,8 @@ run_expers <- first_exper:last_exper
 # (and match the same variable in sims/lfr/make_lfr_sims.R)
 nreps <- 20
 
+set.seed(12345)
+
 for (exper in run_expers) {
     
   exper_string <- paste0("experiment", total_expers[exper])
@@ -65,6 +67,9 @@ for (exper in run_expers) {
          
         results <- CCME(sbm$edge_list, updateOutput = TRUE)
         save(results, file = file.path(curr_dir_p_rep, "ccme.RData"))
+        
+        results <- CCME(sbm$edge_list, updateOutput = TRUE, fastInitial = TRUE)
+        save(results, file = file.path(curr_dir_p_rep, "ccme_fast.RData"))
         
       }
       
