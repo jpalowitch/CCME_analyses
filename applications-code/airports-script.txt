@@ -1,0 +1,7 @@
+Rscript applications-code/airports-dataprep.R
+Rscript applications-code/rm_nodes_make_years.R
+Rscript applications-code/airports-save_Rdatas.R
+bash applications-results/airports/run-code/run-oslom.txt 1> /dev/null 2> applications-results/airports/run-code/run-oslom_log.txt &
+wait
+bash applications-results/airports/run-code/run-slpa.txt 1> /dev/null 2> applications-results/airports/run-code/run-slpa_log.txt &
+wait

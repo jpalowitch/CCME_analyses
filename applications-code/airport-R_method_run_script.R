@@ -1,9 +1,4 @@
-# Specify whether or not to write for OSLOM
-writeOSLOM <- FALSE
-
-
-
-saveDir <- "applications-results/airports/results"
+saveDir <- "applications-results/airports"
 source("saveit.R")
 
 ccmeDir <- "methodFiles/ccme"
@@ -27,6 +22,12 @@ oslom_run_lines <- character(0)
 fullNames <- character(0)
 datNames <- character(0)
 
+# Making the OSLOM folder
+oslomdir <- "applications-results/airports/OSLOM2"
+if (!dir.exists(oslomdir))
+  dir.create(oslomdir, recursive = TRUE)
+
+set.seed(12345)
 
 for (y in 1:yL) {
     
@@ -49,31 +50,16 @@ for (y in 1:yL) {
     
     dat_fn <- paste0(yearNum, "_", fn, ".dat")
     
-    if (writeOSLOM) {
+    write.table(edge_list,
+                file = file.path(oslomdir, dat_fn),
+                row.names = FALSE,
+                col.names = FALSE)
     
-      write.table(edge_list,
-                  file = file.path("airports/oslom/OSLOM2",
-                                   dat_fn),
-                  row.names = FALSE,
-                  col.names = FALSE)
-      
-    }
-    
-    # Draw random seed and save
-    if (redraw_CCME_seeds) {
-      seed_draw <- sample(1e6, 1)
-      writeLines(as.character(seed_draw), 
-                 con = file.path(curr_dir, 
-                                 paste0("seed_ccme_", fn, ".txt")))
-      set.seed(seed_draw)
-    } else {
-      seed_lines <- readLines(file.path(curr_dir, 
-                                        paste0("seed_ccme_", fn, ".txt")))
-      seed_draw <- as.numeric(seed_lines)
-      set.seed(seed_draw)
-    }
-    
-
+    seed_draw <- sample(1e6, 1)
+    writeLines(as.character(seed_draw), 
+               con = file.path(curr_dir, 
+                               paste0("seed_ccme_", fn, ".txt")))
+    set.seed(seed_draw)
 
     # Running  
     Timer <- proc.time()[3]
@@ -82,6 +68,14 @@ for (y in 1:yL) {
     results$time <- Timer
     save(results, file = file.path(curr_dir, 
                                    paste0("output_ccme_",fn,".RData")))
+    
+    # Running  
+    Timer <- proc.time()[3]
+    results <- CCME(edge_list, fastInitial = TRUE)
+    Timer <- proc.time()[3] - Timer
+    results$time <- Timer
+    save(results, file = file.path(curr_dir, 
+                                   paste0("output_ccme_fast_",fn,".RData")))
   
     
     # Making an ipairs file and saving
@@ -90,33 +84,15 @@ for (y in 1:yL) {
                 row.names = FALSE, 
                 col.names = FALSE)
     
-    # Make SLPA seed
-    if (redraw_SLPA_seeds) {
-      seed_draw <- sample(1e6, 1)
-      writeLines(as.character(seed_draw), 
-                 con = file.path(curr_dir, paste0("seed_slpa_", 
-                                                  fn, ".txt")
-                                 )
-                 )
-    } else {
-      seed_draw <- as.numeric(readLines(file.path(curr_dir, 
-                                                  paste0("seed_slpa_", 
-                                                         fn, ".txt")
-                                                  )
-                                        )
-                              )
-    }
-      
-    
     # Adding line to SLPA script
+    seed_draw <- sample(1e6, 1)
     slpa_addline <- paste0("java -jar ",
-                           file.path(getwd(), 
-                                     "methodFiles/GANXiS_v3.0.2/GANXiSw.jar"),
+                           file.path( "methodFiles/GANXiS_v3.0.2/GANXiSw.jar"),
                            " -i ",
-                           file.path(getwd(), curr_dir, 
+                           file.path(curr_dir, 
                                      paste0("network_", fn, ".ipairs")),
                            " -Sym 1 -r 0.1 -d ",
-                           file.path(getwd(), curr_dir),
+                           file.path(curr_dir),
                            " -seed ",
                            seed_draw)
     slpa_run_lines <- c(slpa_run_lines,
@@ -137,12 +113,45 @@ for (y in 1:yL) {
 
 }
 
+runcodedir <- "applications-results/airports/run-code"
+
+if (!dir.exists(runcodedir))
+  dir.create(runcodedir, recursive = TRUE)
+
+# Initializing scripts to run batches, and logfiles
+oslomfn0 <- file.path(runcodedir, "run-oslom")
+slpafn0 <- file.path(runcodedir, "run-slpa")
+file.create(paste0(c(oslomfn0, slpafn0), ".txt"))
+file.create(paste0(c(oslomfn0, slpafn0), "_log.txt"))
+
 # Saving slpa lines
-writeLines(slpa_run_lines, con = "airports/SLPA_run_script.bat")
+fileConn <- file(paste0(slpafn0, ".txt"), "a")
+writeLines(slpa_run_lines, con = fileConn)
+close(fileConn)
 
+# Saving oslom lines, plus the lines to copy and compile the program
+fileConn <- file(paste0(oslomfn0, ".txt"), "a")
 
+    # Coping OSLOM files
+    writeLines(paste0("cp -R methodFiles/OSLOM2/* ", oslomdir),
+               fileConn)
+    
+    # Set the directory
+    writeLines(paste0("cd ", oslomdir),
+               fileConn)
+    
+    # Compiling OSLOM
+    writeLines("chmod 744 compile_all.sh && ./compile_all.sh",
+               fileConn)
+    
+    # Writing run lines
+    writeLines(oslom_run_lines, file = fileConn)
+      
+    # Re-set directory
+    writeLines(paste0("cd ../../../"),
+               fileConn)
+    
+close(fileConn)
 
-
-writeLines(oslom_run_lines, file.path("airports/oslom/OSLOM2/aports.txt"))
-save(datNames, fullNames, 
-     file = file.path("airports/oslom/OSLOM2/aports.RData"))
+# Saving oslom filenames
+save(datNames, fullNames, file = file.path(oslomdir, "aports.RData"))
