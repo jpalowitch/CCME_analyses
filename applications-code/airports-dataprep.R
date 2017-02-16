@@ -13,6 +13,9 @@ web_files <- readLines("applications-code/airport-https.txt")
 if (length(web_files) != lastYear - firstYear + 1)
   stop('year span, web_file length mismatch\n')
 web_addresses <- file.path(webRoot, firstYear:lastYear, web_files)
+names(web_addresses) <- as.character(firstYear:lastYear)
+if (!dir.exists(airDir))
+  dir.create(airDir)
 
 years <- seq(firstYear,lastYear,1)
 yL <- length(years)
@@ -29,7 +32,7 @@ if (readInData) {
   	yr <- years[i]
   	iFold <- file.path(airDir, yr)
   	fn <- list.files(iFold)
-  	datTab <- read.csv(file.path(airDir, yr, fn),
+  	datTab <- read.csv(web_addresses[as.character(yr)],
   	                   header = TRUE,
   	                   stringsAsFactors = FALSE)
   
