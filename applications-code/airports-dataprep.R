@@ -15,7 +15,7 @@ if (length(web_files) != lastYear - firstYear + 1)
 web_addresses <- file.path(webRoot, firstYear:lastYear, web_files)
 names(web_addresses) <- as.character(firstYear:lastYear)
 if (!dir.exists(airDir))
-  dir.create(airDir)
+  dir.create(airDir, recursive = TRUE)
 
 years <- seq(firstYear,lastYear,1)
 yL <- length(years)
