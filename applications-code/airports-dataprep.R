@@ -186,4 +186,4 @@ for(i in 1:yL){
 
 }
 
-save(monthMat,yearMat,file=file.path(airDir,"dataInfo.RData"))
+save(monthMat,yearMat,firstYear,lastYear,file=file.path(airDir,"dataInfo.RData"))

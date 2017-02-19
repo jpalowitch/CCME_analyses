@@ -145,7 +145,7 @@ fileConn <- file(paste0(oslomfn0, ".txt"), "a")
                fileConn)
     
     # Writing run lines
-    writeLines(oslom_run_lines, file = fileConn)
+    writeLines(oslom_run_lines, con = fileConn)
       
     # Re-set directory
     writeLines(paste0("cd ../../../"),
