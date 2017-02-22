@@ -23,7 +23,7 @@ getResults <- TRUE
 # Plot main text?
 main_text_plot <- FALSE
 
-plot_expers <- c(1, 4:length(total_expers))
+plot_expers <- c(1)
 
 # This should consistent throughout the experiments
 nreps <- 20

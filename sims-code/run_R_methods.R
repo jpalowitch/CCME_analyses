@@ -2,8 +2,10 @@ Args = commandArgs(TRUE)
 library(igraph)
 library(Matrix)
 source("sims-code/sbm_funs3.R")
-source("methodFiles/ccme/CCME.R")
-
+CCMEpath <- readLines("sims-results/run-code/ccme-path.txt")
+oldwd <- setwd(CCMEpath)
+source("CCME.R")
+setwd(oldwd)
 total_expers <- readLines("sims-results/exper-names.txt")
 
 if (length(Args) < 2) {
@@ -54,16 +56,10 @@ for (exper in run_expers) {
     
       if (runCCME) {
         # Draw random seed and save
-        if (redrawSeeds) {
-          seed_draw <- sample(1e6, 1)
-          writeLines(as.character(seed_draw), 
-                     con = file.path(curr_dir_p_rep, "ccme_seed.txt"))
-          set.seed(seed_draw)
-        } else {
-          set.seed(as.numeric(readLines(file.path(curr_dir_p_rep, 
-                                                  "ccme_seed.txt")
-                                        )))
-        }
+        seed_draw <- sample(1e6, 1)
+        writeLines(as.character(seed_draw), 
+                   con = file.path(curr_dir_p_rep, "ccme_seed.txt"))
+        set.seed(seed_draw)
          
         results <- CCME(sbm$edge_list, updateOutput = TRUE)
         save(results, file = file.path(curr_dir_p_rep, "ccme.RData"))
@@ -85,16 +81,10 @@ for (exper in run_expers) {
         # WALKTRAP
         
           # Draw random seed and save
-          if (redrawSeeds) {
-            seed_draw <- sample(1e6, 1)
-            writeLines(as.character(seed_draw), 
-                       con = file.path(curr_dir_p_rep, "walktrap_seed.txt"))
-            set.seed(seed_draw)
-          } else {
-            set.seed(as.numeric(readLines(file.path(curr_dir_p_rep, 
-                                                    "walktrap_seed.txt")
-            )))
-          }
+          seed_draw <- sample(1e6, 1)
+          writeLines(as.character(seed_draw), 
+                     con = file.path(curr_dir_p_rep, "walktrap_seed.txt"))
+          set.seed(seed_draw)
           
           # Formatting and saving results
           ig_results <- cluster_walktrap(G)
@@ -108,16 +98,10 @@ for (exper in run_expers) {
         # INFOMAP
           
           # Draw random seed and save
-          if (redrawSeeds) {
-            seed_draw <- sample(1e6, 1)
-            writeLines(as.character(seed_draw), 
-                       con = file.path(curr_dir_p_rep, "infomap_seed.txt"))
-            set.seed(seed_draw)
-          } else {
-            set.seed(as.numeric(readLines(file.path(curr_dir_p_rep, 
-                                                    "infomap_seed.txt")
-            )))
-          }
+          seed_draw <- sample(1e6, 1)
+          writeLines(as.character(seed_draw), 
+                     con = file.path(curr_dir_p_rep, "infomap_seed.txt"))
+          set.seed(seed_draw)
           
           # Formatting and saving results
           ig_results <- cluster_infomap(G)
@@ -131,16 +115,10 @@ for (exper in run_expers) {
         # FAST GREEDY
           
           # Draw random seed and save
-          if (redrawSeeds) {
-            seed_draw <- sample(1e6, 1)
-            writeLines(as.character(seed_draw), 
-                       con = file.path(curr_dir_p_rep, "fast_greedy_seed.txt"))
-            set.seed(seed_draw)
-          } else {
-            set.seed(as.numeric(readLines(file.path(curr_dir_p_rep, 
-                                                    "fast_greedy_seed.txt")
-            )))
-          }
+          seed_draw <- sample(1e6, 1)
+          writeLines(as.character(seed_draw), 
+                     con = file.path(curr_dir_p_rep, "fast_greedy_seed.txt"))
+          set.seed(seed_draw)
           
           # Formatting and saving results
           ig_results <- cluster_fast_greedy(G)

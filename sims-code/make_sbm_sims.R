@@ -1,8 +1,8 @@
+Args = commandArgs(trailingOnly=TRUE)
+
 source("sims-code/sbm_funs3.R")
 
 total_expers <- readLines("sims-results/exper-names.txt")
-
-options(warn = 2)
 
 if (length(Args) < 2) {
   batch_name <- "0"
@@ -167,13 +167,20 @@ for (exper in run_expers) {
   }
   
 
-
-
-  writeLines(oslom_run_lines, file.path(root_dir, "OSLOM2/run_script.txt"))
+  oslomfn <- file.path(root_dir, "OSLOM2/run_script.txt")
+  file.create(oslomfn, recursive = TRUE)
+  fileConn <- file(oslomfn)
+  writeLines(oslom_run_lines, con = fileConn)
+  close(fileConn)
   save(datNames, fullNames, 
        file = file.path(root_dir, "OSLOM2", paste0("sims_", exper_string, ".RData")))
     
-  writeLines(slpa_run_lines, file.path(root_dir, "slpa_run_script.bat"))
+  slpafn <- file.path(file.path(root_dir, "slpa_run_script.bat"))
+  file.create(slpafn)
+  fileConn <- file(slpafn)
+  writeLines(slpa_run_lines, con = fileConn)
+  close(fileConn)
+  
 
   
 }

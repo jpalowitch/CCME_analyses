@@ -1,15 +1,18 @@
 source("sims-code/sbm_funs3.R")
 
 # How many instances can you run at once? Default values are recommended for home computers
-nrun_r <- 3
+nrun_r <- 2
 nrun_oslom <- 2
 nrun_slpa <- 1
+
+# Set the path to find & source the CCME code
+CCMEpath <- "../CCME"
 
 # For the  experiments, do you want to shove the dec vec up to one?
 shove_dec <- TRUE
 
 # Global settings
-par_divs <- 19
+par_divs <- 9
 par_seq_dec <- 1:par_divs / (par_divs + 1)
 par_seq  <- round(100 * (1:par_divs / (par_divs + 1)))
 par_dirs <- as.character(par_seq)
@@ -18,10 +21,10 @@ par_dirs <- as.character(par_seq)
 total_expers <- c("1",
                   "4",
                   "5",
-                  "6",
+                  "9",
                   "7",
                   "8",
-                  "9")
+                  "6")
 
 if (!dir.exists("sims-results/sbm-par-lists"))
   dir.create("sims-results/sbm-par-lists", recursive = TRUE)
@@ -184,6 +187,31 @@ save(par_list,
      par_dirs,
      file = "sims-results/sbm-par-lists/experiment7.RData")
 
+# Experiment 9 -----------------------------------------------------------------
+
+main_text <- "grow N, |BG|=1000, on=0.25N"
+par_list <- make_param_list2(hv = 1000)
+pars <- c("N", "k", "max_k", "max_c", "min_c", "on")
+axis_par <- 1
+par_settings <- matrix(0, 6, par_divs)
+par_settings[1, ] <- round(5000 * (par_seq_dec + min(par_seq_dec) * 
+                                     as.numeric(shove_dec)))
+par_settings[2, ] <- sqrt(par_settings[1, ] + 1000)
+par_settings[3, ] <- 3 * par_settings[2, ]
+par_settings[4, ] <- par_settings[1, ] * 3 / 10
+par_settings[5, ] <- par_settings[4, ] * 2 / 3
+par_settings[6, ] <- 0.25 * par_settings[1, ]
+
+save(par_list,
+     main_text,
+     axis_par,
+     pars,
+     par_settings,
+     par_seq,
+     par_divs,
+     par_dirs,
+     file = "sims-results/sbm-par-lists/experiment9.RData")
+
 # Experiment 8 -----------------------------------------------------------------
 
 main_text <- "Increase om"
@@ -207,34 +235,6 @@ save(par_list,
      par_divs,
      par_dirs,
      file = "sims-results/sbm-par-lists/experiment8.RData")
-
-# Experiment 9 -----------------------------------------------------------------
-
-par_divs <- 19
-par_seq <- seq(5, 95, 5)
-par_dirs <- as.character(par_seq)
-main_text <- "grow N, |BG|=1000, on=0.25N"
-par_list <- make_param_list2(hv = 1000)
-pars <- c("N", "k", "max_k", "max_c", "min_c", "on")
-axis_par <- 1
-par_settings <- matrix(0, 6, par_divs)
-par_settings[1, ] <- round(5000 * (par_seq_dec + min(par_seq_dec) * 
-                                     as.numeric(shove_dec)))
-par_settings[2, ] <- sqrt(par_settings[1, ] + 1000)
-par_settings[3, ] <- 3 * par_settings[2, ]
-par_settings[4, ] <- par_settings[1, ] * 3 / 10
-par_settings[5, ] <- par_settings[4, ] * 2 / 3
-par_settings[6, ] <- 0.25 * par_settings[1, ]
-
-save(par_list,
-     main_text,
-     axis_par,
-     pars,
-     par_settings,
-     par_seq,
-     par_divs,
-     par_dirs,
-     file = "sims-results/sbm-par-lists/experiment9.RData")
 
 # ------------------------------------------------------------------------------
 # Writing run scripts
@@ -423,4 +423,10 @@ for (b in 1:nrun_slpa) {
   close(fileConn)
   
 }
+
+# Writing CCME path file
+ccmepathfn <- "sims-results/run-code/ccme-path.txt"
+fileConn <- file(ccmepathfn)
+writeLines(paste0(CCMEpath), con = fileConn)
+close(fileConn)
 
