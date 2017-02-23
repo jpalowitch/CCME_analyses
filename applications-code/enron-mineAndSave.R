@@ -1,13 +1,9 @@
-# User must set the variable below to the raw data location (see the ReadMe for this project folder)
-#"maildir" = "enron_mail_20110402/enron_mail_20110402/enron_mail_20110402/"maildir""
-
-
 # Function to mine a file
 mineFile <- function(fn){
   
   cat(fn,"\n")
-  
   fLines = suppressWarnings(readLines(fn))
+  fLines <- unname(sapply(fLines, function (Line) iconv(enc2utf8(Line), sub = "byte")))
   toLineNum = suppressWarnings(try(min(which(sapply(fLines,function(Line)substr(Line,1,3)) == "To:"))))
   fromLineNum = suppressWarnings(try(min(which(sapply(fLines,function(Line)substr(Line,1,5)) == "From:"))))
   
@@ -91,9 +87,12 @@ for(i in 1:length(folderList)){
 
 
 # Check that the counts are equal
-toCount
-fromCount
+if (toCount != fromCount)
+  stop('# in-edges != # out-edges')
 
 # Save the things necessary to make edgeList in different session
-save(folderList,toCount,from_tosList,file = "mineAndSave_results.RData")
+if (!dir.exists("applications-results/enron/data"))
+  dir.create("applications-results/enron/data", recursive = TRUE)
+save(folderList,toCount,from_tosList,
+     file = file.path("applications-results/enron/data", "mineAndSave_results.RData"))
 
