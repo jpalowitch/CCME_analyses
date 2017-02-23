@@ -8,7 +8,7 @@ doSave <- TRUE
 
 # The choices below correspond to the positions in the total_expers vector,
 # NOT the actual experiment names
-run_expers <- c(1)
+run_expers <- c(1:length(total_expers))
 
 # This should consistent throughout the experiments
 nreps <- 20

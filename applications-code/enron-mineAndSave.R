@@ -20,7 +20,8 @@ mineFile <- function(fn){
   continueTo = substr(fLines[nextLine],1,1) == "\t"
   
   while(continueTo){
-    extraToLines = c(extraToLines,substr(fLines[nextLine],2,nchar(fLines[nextLine])))
+    extraToLines <- c(extraToLines, gsub("[\x01-\x1f\x7f-\xff]", "", 
+                                         fLines[nextLine]))
     nextLine = nextLine + 1
     continueTo = substr(fLines[nextLine],1,1) == "\t"
   }
@@ -28,8 +29,8 @@ mineFile <- function(fn){
   if(!is.null(extraToLines))
     extraTos = as.vector(unlist(strsplit(extraToLines,", ")))
   
-  toLine = fLines[toLineNum]
-  fromLine = fLines[fromLineNum]
+  toLine = gsub("[\x01-\x1f\x7f-\xff]", "", fLines[toLineNum])
+  fromLine = gsub("[\x01-\x1f\x7f-\xff]", "", fLines[fromLineNum])
   Tos = strsplit(substr(toLine,5,nchar(toLine)),", ")
   Froms = strsplit(substr(fromLine,7,nchar(fromLine)),", ")
   

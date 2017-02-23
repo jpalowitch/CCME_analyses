@@ -13,7 +13,7 @@ do_slpa <- TRUE
 
 
 # Set expers
-run_expers <- c(1, 4:length(total_expers))
+run_expers <- c(1:length(total_expers))
 
 for (i in run_expers) {
   
@@ -23,10 +23,10 @@ for (i in run_expers) {
   
   
   if (sbm) {
-    exper_string <- paste0("experiment", i)
+    exper_string <- paste0("experiment", total_expers[i])
     rootDir <- file.path("sims-results", exper_string)
   } else {
-    exper_string <- paste0("experiment", i)
+    exper_string <- paste0("experiment", total_expers[i])
     rootDir <- file.path("sims-results", exper_string)
   }
   batchTag <- paste0("sims_", exper_string)
