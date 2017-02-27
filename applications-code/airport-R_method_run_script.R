@@ -1,8 +1,9 @@
 saveDir <- "applications-results/airports"
 source("saveit.R")
 
-ccmeDir <- "methodFiles/ccme"
-source(file.path(ccmeDir, "CCME.R"))
+origwd <- setwd("../CCME")
+source("CCME.R")
+setwd(origwd)
 
 library(igraph)
 

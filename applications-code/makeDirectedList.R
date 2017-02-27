@@ -1,7 +1,7 @@
 saveDir <- "applications-results/enron/data"
 if (!dir.exists(saveDir))
   dir.create(saveDir, recursive = TRUE)
-load("mineAndSave_results.RData")
+load(file.path(saveDir, "mineAndSave_results.RData"))
 
 # Get edgelist0?
 getEdgeList0 <- TRUE
@@ -61,10 +61,10 @@ if(getEdgeList0){
     
   }
   
-  save(fns0,edgeList0,nodes0,fullData,file = "edgeList0.RData")
+  save(fns0,edgeList0,nodes0,fullData,file = file.path(saveDir, "edgeList0.RData"))
   
 }else{
-  load("edgeList0.RData")
+  load(file.path(saveDir, "edgeList0.RData"))
 }
 
 nodeList = rep(list(NULL),length(nodes0))

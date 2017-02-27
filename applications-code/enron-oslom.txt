@@ -1,0 +1,7 @@
+cp -R methodFiles/OSLOM2/* applications-results/enron/results/OSLOM2
+cd applications-results/enron/results/OSLOM2
+chmod 744 compile_all.sh && ./compile_all.sh
+touch log.txt
+echo oslom_undir now running so don’t type anything, just be very patient. caffeinate recommended.
+./oslom_undir -f enron-network.dat -w -singlet -fast 1> /dev/null 2> log.txt
+cd ../../../../

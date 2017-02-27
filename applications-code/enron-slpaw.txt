@@ -1,0 +1,1 @@
+java -jar methodFiles/GANXiS_v3.0.2/GANXiSw.jar -i applications-results/enron/results/enron-network.ipairs -Sym 1 -r 0.1 -d applications-results/enron/results
