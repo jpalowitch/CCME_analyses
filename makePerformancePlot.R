@@ -1,56 +1,88 @@
-makePerformancePlot <-  function (fn, meanMat, sdMat,
-                                  legPos = "topright",
-                                  legCex = 2,
-                                  lwd = 1,
-                                  cex = 1,
-                                  xRange,
+makePerformancePlot <-  function (fn = NULL, meanMat, sdMat = NULL,
+                                  legPos = "topright", xvals,
+                                  legCex = 2, pchs = 1:nrow(meanMat),
+                                  lwd = 1, legLwd = 2, yRange = NULL,
+                                  cex = 1, new = TRUE, doLegend = TRUE,
+                                  xRange, plotFile = TRUE,
                                   ... ) {
   
   # Calculating plot limits
-  upperLimit <- max(meanMat + sdMat)
-  lowerLimit <- min(meanMat - sdMat)
   
-  png(fn, width = 1000, height = 1000)
+  if (!new) {
+    upperLimit <- max(meanMat + sdMat)
+    lowerLimit <- min(meanMat - sdMat)
+  } else {
+    upperLimit <- max(meanMat)
+    lowerLimit <- min(meanMat)
+  }
+  if (plotFile) {
+    png(fn, width = 1000, height = 1000)
+    
+    par(oma= rep(0,4),
+        mar=c(12,12,6,4),
+        mgp=c(8,3,0),
+        mfrow = c(1,1))
+  }
   
-  par(oma= rep(0,4),
-      mar=c(12,12,6,4),
-      mgp=c(8,3,0),
-      mfrow = c(1,1))
+  if (is.null(yRange)) {
+    yRange <- c(lowerLimit, upperLimit)
+  }
   
   plot(0.5, 0.5, col="white", pch='.',
-       xlim = xRange,
-       ylim = c(lowerLimit, upperLimit),
-       ...)
+       xlim = xRange, ylim = yRange, ...)
   
   for(j in 1:length(plot_names)){
     
-    meth = plot_names[j]
-    plotCI(x = paramVec,
-           y = meanMat[meth, ],
-           uiw = sdMat[meth, ],         
-           pch=j,
-           pt.bg="black",
-           cex=cex,
-           lty=1,
-           lwd = lwd,
-           gap=0,
-           type="o",
-           sfrac=0.005,
-           add=TRUE,
-           col = colPal[j])
+    if (new) {
+      
+      meth = plot_names[j]
+      points(xvals, meanMat[meth, ], pch = pchs[j], cex = cex)
+      lines(xvals, meanMat[meth, ], lty = j + 1, lwd = lwd)
+      
+    } else {
+    
+      meth = plot_names[j]
+      plotCI(x = xvals,
+             y = meanMat[meth, ],
+             uiw = sdMat[meth, ],         
+             pch = pchs[j],
+             pt.bg="black",
+             cex=cex,
+             lty=1,
+             lwd = lwd,
+             gap=0,
+             type="o",
+             sfrac=0.005,
+             add=TRUE,
+             col = colPal[j])
+      
+    }
     
   }
   
-  legend(x = legPos,
-         legend = plot_names,
-         col = colPal,
-         lty = 1,
-         lwd = lwd,
-         pt.cex = cex,
-         pch = 1:length(plot_names),
-         cex = legCex)
+  if (doLegend) {
+    if (new) {
+      
+      legend(x = legPos, legend = plot_names, lty = 1 + 1:length(plot_names),
+             cex = legCex, lwd = legLwd, pch = pchs)
+      
+      
+    } else {
+    
+    legend(x = legPos,
+           legend = plot_names,
+           col = colPal,
+           lty = 1,
+           lwd = lwd,
+           pt.cex = cex,
+           pch = 1:length(plot_names),
+           cex = legCex)
+      
+    }
+  }
   
-  dev.off()
+  if (plotFile)
+    dev.off()
   
   return(NULL)
   

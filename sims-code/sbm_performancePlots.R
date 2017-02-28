@@ -8,17 +8,20 @@ source("sims-code/sbm_funs3.R")
 source("mod_funs.R")
 
 # Set method names:
-methNames = c("ccme", "oslom", "slpa", "fast_greedy", "walktrap", "infomap", "ccme_fast")
+methNames = c("ccme", "oslom", "slpa", "fast_greedy", "walktrap", "infomap")
 
 # Set which methods to plot and their plot names
-plot_meths <- c(4:6, 2, 3, 1, 7)
-plot_names <- c("FastGreedy", "Walktrap", "Infomap", "OSLOM", "SLPAw", "CCME", "CCME-fast")
+plot_meths <- c(4:6, 2, 3, 1)
+plot_names <- c("FastGreedy", "Walktrap", "Infomap", "OSLOM", "SLPAw", "CCME")
+
+# Set points
+pchs <- c(14, 8, 3, 22, 24, 21)
 
 # Do mod?
 doMod <- FALSE
 
 # Re-get results?
-getResults <- TRUE
+getResults <- FALSE
 
 # Plot main text?
 main_text_plot <- FALSE
@@ -31,6 +34,9 @@ nreps <- 20
 # Brewing colors
 colPal <- brewer.pal(9, "Set1")
 
+# Storage for comb plots
+combPlot1 <- list("experiment4" = NULL, "experiment5" = NULL, "experiment6" = NULL,
+                  "experiment7" = NULL, "experiment8" = NULL, "experiment9" = NULL)
 
 for (exper in plot_expers) {
   
@@ -216,7 +222,7 @@ for (exper in plot_expers) {
   cex.axis <- 3.5
   cex <- 3.5
   legCex <- 3
-  lwd <- 2.5
+  lwd <- 3
   
   if (exists("axis_par_string")) {
     xlab_string <- axis_par_string
@@ -248,6 +254,7 @@ for (exper in plot_expers) {
     
     dummy <- makePerformancePlot(fn = file.path("sims-results",
                                                 paste0(expString, "_mod.png")),
+                                 xvals = paramVec,
                                  meanMat = mod_means,
                                  sdMat = mod_sds,
                                  xRange = c(paramVec[1], paramVec[length(paramVec)]),
@@ -257,7 +264,7 @@ for (exper in plot_expers) {
                                  legPos = "topright",
                                  legCex = legCex,
                                  lwd = lwd,
-                                 cex = cex,
+                                 cex = cex, pchs = pchs,
                                  cex.main = cex.main,
                                  cex.lab = cex.lab,
                                  cex.axis = cex.axis)
@@ -274,6 +281,7 @@ for (exper in plot_expers) {
     
     dummy <- makePerformancePlot(fn = file.path("sims-results",
                                                 paste0(expString, "_nmi.png")),
+                                 xvals = paramVec,
                                  meanMat = nmi_means,
                                  sdMat = nmi_sds,
                                  xRange = c(paramVec[1], paramVec[length(paramVec)]),
@@ -283,7 +291,7 @@ for (exper in plot_expers) {
                                  legPos = "bottomright",
                                  legCex = legCex,
                                  lwd = lwd,
-                                 cex = cex,
+                                 cex = cex, pchs = pchs,
                                  cex.main = cex.main,
                                  cex.lab = cex.lab,
                                  cex.axis = cex.axis)
@@ -301,6 +309,7 @@ for (exper in plot_expers) {
     
     dummy <- makePerformancePlot(fn = file.path("sims-results",
                                                 paste0(expString, "_typeI.png")),
+                                 xvals = paramVec,
                                  meanMat = typeI_means,
                                  sdMat = typeI_sds,
                                  xRange = c(paramVec[1], paramVec[length(paramVec)]),
@@ -310,7 +319,7 @@ for (exper in plot_expers) {
                                  legPos = "topright",
                                  legCex = legCex,
                                  lwd = lwd,
-                                 cex = cex,
+                                 cex = cex, pchs = pchs,
                                  cex.main = cex.main,
                                  cex.lab = cex.lab,
                                  cex.axis = cex.axis)
@@ -328,6 +337,7 @@ for (exper in plot_expers) {
     
     dummy <- makePerformancePlot(fn = file.path("sims-results",
                                                 paste0(expString, "_typeII.png")),
+                                 xvals = paramVec,
                                  meanMat = typeII_means,
                                  sdMat = typeII_sds,
                                  xRange = c(paramVec[1], paramVec[length(paramVec)]),
@@ -337,11 +347,190 @@ for (exper in plot_expers) {
                                  legPos = "topright",
                                  legCex = legCex,
                                  lwd = lwd,
-                                 cex = cex,
+                                 cex = cex, pchs = pchs,
                                  cex.main = cex.main,
                                  cex.lab = cex.lab,
                                  cex.axis = cex.axis)
     
   )
   
+  combPlot1[[expString]] <- list("nmi_means" = nmi_means,
+                                 "typeI_means" = typeI_means,
+                                 "typeII_means" = typeII_means,
+                                 "paramVec" = paramVec,
+                                 "xRange" = c(paramVec[1], 
+                                              paramVec[length(paramVec)]),
+                                 "xlab_string" = xlab_string)
+  
 }
+
+cex.main = cex.axis
+
+png("sims-results/combined_plot.png", width = 1500, height = 2000)
+par(mfrow = c(4, 3),
+    oma = rep(0, 4),
+    mar = c(11, 11, 6, 4),
+    mgp = c(6, 2, 0))
+
+# First row
+
+dummy <- makePerformancePlot(meanMat = combPlot1[["experiment4"]]$nmi_means, 
+                             plotFile = FALSE, doLegend = FALSE, 
+                             xvals = combPlot1[["experiment4"]]$paramVec,
+                             xRange = combPlot1[["experiment4"]]$xRange,
+                             yRange = c(0.75, 1),
+                             main = "Increasing Edge Signal", 
+                             xlab = combPlot1[["experiment4"]]$xlab_string, 
+                             ylab = "Overlapping NMI",
+                             legPos = "topright", legCex = legCex,
+                             lwd = lwd, cex = cex, pchs = pchs, 
+                             cex.main = cex.main, cex.lab = cex.lab, 
+                             cex.axis = cex.axis)
+
+dummy <- makePerformancePlot(meanMat = combPlot1[["experiment5"]]$nmi_means, 
+                             plotFile = FALSE, doLegend = FALSE, 
+                             xvals = combPlot1[["experiment5"]]$paramVec,
+                             xRange = combPlot1[["experiment5"]]$xRange,
+                             yRange = c(0.75, 1),
+                             main = "Increasing Weight Signal", 
+                             xlab = combPlot1[["experiment5"]]$xlab_string, 
+                             ylab = "Overlapping NMI",
+                             legPos = "topright", legCex = legCex,
+                             lwd = lwd, cex = cex, pchs = pchs, 
+                             cex.main = cex.main, cex.lab = cex.lab, 
+                             cex.axis = cex.axis)
+
+dummy <- makePerformancePlot(meanMat = combPlot1[["experiment6"]]$nmi_means, 
+                             plotFile = FALSE, doLegend = FALSE, 
+                             xvals = combPlot1[["experiment6"]]$paramVec,
+                             xRange = combPlot1[["experiment6"]]$xRange,
+                             yRange = c(0.75, 1),
+                             main = "Increasing Edge & Wt. Signal", 
+                             xlab = combPlot1[["experiment6"]]$xlab_string, 
+                             ylab = "Overlapping NMI",
+                             legPos = "topright", legCex = legCex,
+                             lwd = lwd, cex = cex, pchs = pchs, 
+                             cex.main = cex.main, cex.lab = cex.lab, 
+                             cex.axis = cex.axis)
+
+# Second row
+
+dummy <- makePerformancePlot(meanMat = combPlot1[["experiment4"]]$typeII_means, 
+                             plotFile = FALSE, doLegend = FALSE, 
+                             xvals = combPlot1[["experiment4"]]$paramVec,
+                             xRange = combPlot1[["experiment4"]]$xRange,
+                             main = "Increasing Edge Signal", 
+                             xlab = combPlot1[["experiment4"]]$xlab_string, 
+                             ylab = "% C.I.B.",
+                             legPos = "topright", legCex = legCex,
+                             lwd = lwd, cex = cex, pchs = pchs, 
+                             cex.main = cex.main, cex.lab = cex.lab, 
+                             cex.axis = cex.axis)
+
+dummy <- makePerformancePlot(meanMat = combPlot1[["experiment5"]]$typeII_means, 
+                             plotFile = FALSE, doLegend = FALSE, 
+                             xvals = combPlot1[["experiment5"]]$paramVec,
+                             xRange = combPlot1[["experiment5"]]$xRange,
+                             main = "Increasing Weight Signal", 
+                             xlab = combPlot1[["experiment5"]]$xlab_string, 
+                             ylab = "% C.I.B.",
+                             legPos = "topright", legCex = legCex,
+                             lwd = lwd, cex = cex, pchs = pchs, 
+                             cex.main = cex.main, cex.lab = cex.lab, 
+                             cex.axis = cex.axis)
+
+dummy <- makePerformancePlot(meanMat = combPlot1[["experiment6"]]$typeII_means, 
+                             plotFile = FALSE, doLegend = TRUE, 
+                             xvals = combPlot1[["experiment6"]]$paramVec,
+                             xRange = combPlot1[["experiment6"]]$xRange,
+                             main = "Increasing Edge & Wt. Signal", 
+                             xlab = combPlot1[["experiment6"]]$xlab_string, 
+                             ylab = "% C.I.B.",
+                             legPos = "topright", legCex = legCex,
+                             lwd = lwd, cex = cex, pchs = pchs, 
+                             cex.main = cex.main, cex.lab = cex.lab, 
+                             cex.axis = cex.axis)
+
+# Third row
+
+dummy <- makePerformancePlot(meanMat = combPlot1[["experiment7"]]$nmi_means, 
+                             plotFile = FALSE, doLegend = FALSE,
+                             xRange = combPlot1[["experiment7"]]$xRange,
+                             xvals = combPlot1[["experiment7"]]$paramVec,
+                             main = "Increasing # Overlap Nodes", 
+                             xlab = combPlot1[["experiment7"]]$xlab_string, 
+                             ylab = "% B.I.C.",
+                             legPos = "topright", legCex = legCex,
+                             lwd = lwd, cex = cex, pchs = pchs, 
+                             cex.main = cex.main, cex.lab = cex.lab, 
+                             cex.axis = cex.axis)
+
+
+dummy <- makePerformancePlot(meanMat = combPlot1[["experiment7"]]$typeII_means, 
+                             plotFile = FALSE, doLegend = FALSE,
+                             xRange = combPlot1[["experiment7"]]$xRange,
+                             xvals = combPlot1[["experiment7"]]$paramVec,
+                             main = "Increasing # Overlap Nodes", 
+                             xlab = combPlot1[["experiment7"]]$xlab_string, 
+                             ylab = "% C.I.B.",
+                             legPos = "topright", legCex = legCex,
+                             lwd = lwd, cex = cex, pchs = pchs, 
+                             cex.main = cex.main, cex.lab = cex.lab, 
+                             cex.axis = cex.axis)
+
+
+dummy <- makePerformancePlot(meanMat = combPlot1[["experiment8"]]$nmi_means, 
+                             plotFile = FALSE, doLegend = FALSE,
+                             xRange = combPlot1[["experiment8"]]$xRange,
+                             xvals = combPlot1[["experiment8"]]$paramVec,
+                             #main = "Increasing # Memberships", 
+                             main = "C-3",
+                             xlab = combPlot1[["experiment8"]]$xlab_string, 
+                             ylab = "Overlapping NMI",
+                             legPos = "topright", legCex = legCex,
+                             lwd = lwd, cex = cex, pchs = pchs, 
+                             cex.main = cex.main, cex.lab = cex.lab, 
+                             cex.axis = cex.axis)
+
+# Fourth Row
+
+dummy <- makePerformancePlot(meanMat = combPlot1[["experiment9"]]$nmi_means, 
+                             plotFile = FALSE, doLegend = FALSE,
+                             xRange = combPlot1[["experiment9"]]$xRange,
+                             xvals = combPlot1[["experiment9"]]$paramVec,
+                             #main = "w/Background & Overlap Nodes", 
+                             main = "D-1",
+                             xlab = combPlot1[["experiment9"]]$xlab_string, 
+                             ylab = "Overlapping NMI",
+                             legPos = "topright", legCex = legCex,
+                             lwd = lwd, cex = cex, pchs = pchs, 
+                             cex.main = cex.main, cex.lab = cex.lab, 
+                             cex.axis = cex.axis)
+
+dummy <- makePerformancePlot(meanMat = combPlot1[["experiment9"]]$typeI_means, 
+                             plotFile = FALSE, doLegend = FALSE,
+                             xRange = combPlot1[["experiment9"]]$xRange,
+                             xvals = combPlot1[["experiment9"]]$paramVec,
+                             #main = "w/Background & Overlap Nodes", 
+                             main = "D-2",
+                             xlab = combPlot1[["experiment9"]]$xlab_string, 
+                             ylab = "% B.I.C.",
+                             legPos = "topright", legCex = legCex,
+                             lwd = lwd, cex = cex, pchs = pchs, 
+                             cex.main = cex.main, cex.lab = cex.lab, 
+                             cex.axis = cex.axis)
+
+dummy <- makePerformancePlot(meanMat = combPlot1[["experiment9"]]$typeII_means, 
+                             plotFile = FALSE,
+                             xRange = combPlot1[["experiment9"]]$xRange,
+                             xvals = combPlot1[["experiment9"]]$paramVec,
+                             xlab = combPlot1[["experiment9"]]$xlab_string, 
+                             ylab = "% C.I.B.",
+                             legPos = "topright", legCex = legCex,
+                             lwd = lwd, cex = cex, pchs = pchs, 
+                             cex.main = cex.main, cex.lab = cex.lab, 
+                             cex.axis = cex.axis,
+                             #main = "w/Background & Overlap Nodes")
+                             main = "D-3")
+
+dev.off()
