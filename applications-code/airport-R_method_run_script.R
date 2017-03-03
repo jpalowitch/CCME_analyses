@@ -23,6 +23,9 @@ oslom_run_lines <- character(0)
 fullNames <- character(0)
 datNames <- character(0)
 
+# Tracker for debugging
+onMethod <- NULL
+
 # Making the OSLOM folder
 oslomdir <- "applications-results/airports/OSLOM2"
 if (!dir.exists(oslomdir))
@@ -56,10 +59,14 @@ for (y in 1:yL) {
                 row.names = FALSE,
                 col.names = FALSE)
     
-    seed_draw <- sample(1e6, 1)
-    writeLines(as.character(seed_draw), 
-               con = file.path(curr_dir, 
-                               paste0("seed_ccme_", fn, ".txt")))
+    # Setting seed
+    seedfn <- file.path(curr_dir, paste0("seed_ccme_", fn, ".txt"))
+    if (file.exists(seedfn)) {
+      seed_draw <- as.integer(readLines(seedfn))
+    } else {
+      seed_draw <- sample(1e6, 1)
+      writeLines(as.character(seed_draw), con = seedfn)
+    }
     set.seed(seed_draw)
 
     # Running  
@@ -77,6 +84,14 @@ for (y in 1:yL) {
     results$time <- Timer
     save(results, file = file.path(curr_dir, 
                                    paste0("output_ccme_fast_",fn,".RData")))
+    
+    # Running  
+    Timer <- proc.time()[3]
+    results <- CCME(edge_list, fastInitial = FALSE, zoverlap = TRUE)
+    Timer <- proc.time()[3] - Timer
+    results$time <- Timer
+    save(results, file = file.path(curr_dir, 
+                                   paste0("output_ccme_z_",fn,".RData")))
   
     
     # Making an ipairs file and saving

@@ -12,9 +12,6 @@ source(file.path("applications-code", "get_statistics.R"))
 colPal <- brewer.pal(9, "Set1")
 colPal <- colPal[c(1, 2, 3)]
 
-# Loading edge_list as read/run by methods
-load(file.path(dataDir, "edge_list_R.RData"))
-
 # Loading edgeList (file with some metadata)
 load(file.path(dataDir, "edgeList.RData"))
 

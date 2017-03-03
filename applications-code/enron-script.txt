@@ -4,7 +4,7 @@ Rscript enron-mineAndSave.R
 Rscript makeDirectedList.R
 Rscript makeEdgeList.R
 Rscript applications-code/enron-write_OSLOM_SLPAw.R
-Rscript runScript.R
+Rscript applications-code/enron-runScript.R
 bash applications-code/enron-oslom.txt
 bash applications-code/enron-slpaw.txt
 Rscript applications-code/enron-postAnalysis.R

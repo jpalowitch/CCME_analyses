@@ -56,16 +56,20 @@ for (exper in run_expers) {
     
       if (runCCME) {
         # Draw random seed and save
-        seed_draw <- sample(1e6, 1)
-        writeLines(as.character(seed_draw), 
-                   con = file.path(curr_dir_p_rep, "ccme_seed.txt"))
+        seedfn <- file.path(curr_dir_p_rep, "ccme_seed.txt")
+        if (!file.exists(seedfn)) {
+          seed_draw <- sample(1e6, 1)
+          writeLines(as.character(seed_draw), con = seedfn)
+        } else {
+          seed_draw <- as.integer(readLines(seedfn))
+        }
         set.seed(seed_draw)
          
         results <- CCME(sbm$edge_list, updateOutput = TRUE)
         save(results, file = file.path(curr_dir_p_rep, "ccme.RData"))
         
-        results <- CCME(sbm$edge_list, updateOutput = TRUE, fastInitial = TRUE)
-        save(results, file = file.path(curr_dir_p_rep, "ccme_fast.RData"))
+        #results <- CCME(sbm$edge_list, updateOutput = TRUE, fastInitial = TRUE)
+        #save(results, file = file.path(curr_dir_p_rep, "ccme_fast.RData"))
         
       }
       
@@ -80,11 +84,15 @@ for (exper in run_expers) {
         
         # WALKTRAP
         
-          # Draw random seed and save
+        # Draw random seed and save
+        seedfn <- file.path(curr_dir_p_rep, "walktrap_seed.txt")
+        if (!file.exists(seedfn)) {
           seed_draw <- sample(1e6, 1)
-          writeLines(as.character(seed_draw), 
-                     con = file.path(curr_dir_p_rep, "walktrap_seed.txt"))
-          set.seed(seed_draw)
+          writeLines(as.character(seed_draw), con = seedfn)
+        } else {
+          seed_draw <- as.integer(readLines(seedfn))
+        }
+        set.seed(seed_draw)
           
           # Formatting and saving results
           ig_results <- cluster_walktrap(G)
@@ -98,9 +106,13 @@ for (exper in run_expers) {
         # INFOMAP
           
           # Draw random seed and save
-          seed_draw <- sample(1e6, 1)
-          writeLines(as.character(seed_draw), 
-                     con = file.path(curr_dir_p_rep, "infomap_seed.txt"))
+          seedfn <- file.path(curr_dir_p_rep, "infomap_seed.txt")
+          if (!file.exists(seedfn)) {
+            seed_draw <- sample(1e6, 1)
+            writeLines(as.character(seed_draw), con = seedfn)
+          } else {
+            seed_draw <- as.integer(readLines(seedfn))
+          }
           set.seed(seed_draw)
           
           # Formatting and saving results
@@ -115,9 +127,13 @@ for (exper in run_expers) {
         # FAST GREEDY
           
           # Draw random seed and save
-          seed_draw <- sample(1e6, 1)
-          writeLines(as.character(seed_draw), 
-                     con = file.path(curr_dir_p_rep, "fast_greedy_seed.txt"))
+          seedfn <- file.path(curr_dir_p_rep, "fast_greedy_seed.txt")
+          if (!file.exists(seedfn)) {
+            seed_draw <- sample(1e6, 1)
+            writeLines(as.character(seed_draw), con = seedfn)
+          } else {
+            seed_draw <- as.integer(readLines(seedfn))
+          }
           set.seed(seed_draw)
           
           # Formatting and saving results
