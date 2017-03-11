@@ -8,7 +8,6 @@ wait
 bash sims-results/run-code/run-rmeth.txt
 Rscript sims-code/extract_all_nonCCME.R
 Rscript sims-code/make_comm_dats.R
------
 bash sims-results/run-code/all_mutual_calcs.txt
-R sims-code/plot sims
+Rscript sims-code/sbm_performancePlots.R
 
