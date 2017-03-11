@@ -282,6 +282,7 @@ for (b in 1:nrun_r) {
                    "1> /dev/null",
                    "2>", paste0(sbmfn, "_log.txt"), "&"),
              fileConn)
+  writeLines(paste0("PID", b, "=$!"), fileConn)
   close(fileConn)
    
   # Writing on script to run R methods
@@ -291,9 +292,18 @@ for (b in 1:nrun_r) {
                    "1> /dev/null",
                    "2>", paste0(rmethfn, "_log.txt"), "&"),
              fileConn)
+  writeLines(paste0("PID", b, "=$!"), fileConn)
   close(fileConn)
   
 }
+
+# Writing lines to tell the next thing to wait for background processes
+fileConn <- file(paste0(sbmfn0, ".txt"), "a")
+writeLines(paste(c("wait", paste0("PID", 1:nrun_r)), collapse = " "), fileConn)
+close(fileConn)
+fileConn <- file(paste0(rmethfn0, ".txt"), "a")
+writeLines(paste(c("wait", paste0("PID", 1:nrun_r)), collapse = " "), fileConn)
+close(fileConn)
 
 #-------------------------------------------------------------------------------
 # Writing OSLOM batch files
@@ -324,6 +334,7 @@ for (b in 1:nrun_oslom) {
                    "1> /dev/null",
                    "2>", paste0(oslomfn, "_log.txt"), "&"),
              fileConn)
+  writeLines(paste0("PID", b, "=$!"), fileConn)
   close(fileConn)
   
   # Writing batch scripts to run OSLOM
@@ -354,7 +365,7 @@ for (b in 1:nrun_oslom) {
                fileConn)
     
     # Run the run_script
-    writeLines('bash run_script.txt 1> /dev/null 2> log.txt &',
+    writeLines('bash run_script.txt 1> /dev/null 2> log.txt',
                fileConn)
     
     # Re-set directory
@@ -365,6 +376,10 @@ for (b in 1:nrun_oslom) {
   close(fileConn)
   
 }
+
+fileConn <- file(paste0(oslomfn0, ".txt"), "a")
+writeLines(paste(c("wait", paste0("PID", 1:nrun_oslom)), collapse = " "), fileConn)
+close(fileConn)
 
 #-------------------------------------------------------------------------------
 # Writing SLPA batch files

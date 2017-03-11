@@ -1,8 +1,6 @@
 Rscript sims-code/make_par_lists.R
 bash sims-results/run-code/make-sbm-sims.txt
-wait
 bash sims-results/run-code/run-oslom.txt
-wait
 bash sims-results/run-code/run-slpa.txt
 wait
 bash sims-results/run-code/run-rmeth.txt
