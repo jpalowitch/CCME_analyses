@@ -2,7 +2,6 @@ Rscript sims-code/make_par_lists.R
 bash sims-results/run-code/make-sbm-sims.txt
 bash sims-results/run-code/run-oslom.txt
 bash sims-results/run-code/run-slpa.txt
-wait
 bash sims-results/run-code/run-rmeth.txt
 Rscript sims-code/extract_all_nonCCME.R
 Rscript sims-code/make_comm_dats.R
