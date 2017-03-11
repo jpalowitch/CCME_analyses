@@ -299,10 +299,10 @@ for (b in 1:nrun_r) {
 
 # Writing lines to tell the next thing to wait for background processes
 fileConn <- file(paste0(sbmfn0, ".txt"), "a")
-writeLines(paste(c("wait", paste0("PID", 1:nrun_r)), collapse = " "), fileConn)
+writeLines(paste(c("wait", paste0("$PID", 1:nrun_r)), collapse = " "), fileConn)
 close(fileConn)
 fileConn <- file(paste0(rmethfn0, ".txt"), "a")
-writeLines(paste(c("wait", paste0("PID", 1:nrun_r)), collapse = " "), fileConn)
+writeLines(paste(c("wait", paste0("$PID", 1:nrun_r)), collapse = " "), fileConn)
 close(fileConn)
 
 #-------------------------------------------------------------------------------
@@ -378,7 +378,7 @@ for (b in 1:nrun_oslom) {
 }
 
 fileConn <- file(paste0(oslomfn0, ".txt"), "a")
-writeLines(paste(c("wait", paste0("PID", 1:nrun_oslom)), collapse = " "), fileConn)
+writeLines(paste(c("wait", paste0("$PID", 1:nrun_oslom)), collapse = " "), fileConn)
 close(fileConn)
 
 #-------------------------------------------------------------------------------
@@ -440,7 +440,7 @@ for (b in 1:nrun_slpa) {
 }
 
 fileConn <- file(paste0(slpawfn0, ".txt"), "a")
-writeLines(paste(c("wait", paste0("PID", 1:nrun_slpa)), collapse = " "), fileConn)
+writeLines(paste(c("wait", paste0("$PID", 1:nrun_slpa)), collapse = " "), fileConn)
 close(fileConn)
 
 # Writing CCME path file
