@@ -439,6 +439,10 @@ for (b in 1:nrun_slpa) {
   
 }
 
+fileConn <- file(paste0(slpawfn0, ".txt"), "a")
+writeLines(paste(c("wait", paste0("PID", 1:nrun_slpa)), collapse = " "), fileConn)
+close(fileConn)
+
 # Writing CCME path file
 ccmepathfn <- "sims-results/run-code/ccme-path.txt"
 fileConn <- file(ccmepathfn)
