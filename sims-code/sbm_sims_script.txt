@@ -1,4 +1,7 @@
+bash get_method_codes.txt
 Rscript sims-code/make_par_lists.R
+echo Creating simulated networks. This will take about 3 hours.
+echo You can check progress in sims-results/run-code/batch-scripts.
 bash sims-results/run-code/make-sbm-sims.txt
 bash sims-results/run-code/run-oslom.txt
 bash sims-results/run-code/run-slpa.txt

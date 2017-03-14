@@ -36,6 +36,16 @@ for (exper in run_expers) {
   
   exper_string <- paste0("experiment", total_expers[exper])
   
+  log_path <- file.path("sims-results/run-code/batch-scripts", exper_string)
+  if (file.exists(paste0(log_path, "_progress.txt"))) {
+    file.remove(paste0(log_path, "_progress.txt"))
+  } else { 
+    file.create(paste0(log_path, "_progress.txt"))
+    fileConn <- file(paste0(log_path, "_progress.txt"), "a")
+    writeLines(paste("Begun writing", exper_string, "\n"), fileConn)
+    close(fileConn)
+  }
+  
   # Finding the folder
   root_dir <- file.path("sims-results", exper_string)
   if (!dir.exists(root_dir)) {dir.create(root_dir)}
@@ -59,6 +69,10 @@ for (exper in run_expers) {
   for (p in 1:par_divs) {
     
     cat("Making sim", exper_string, "par num", p, "- ")
+    
+    fileConn <- file(paste0(log_path, "_progress.txt"), "a")
+    writeLines(paste("--Begun writing ", p, "\n"), fileConn)
+    close(fileConn)
     
     # Setting directory
     curr_dir_p <- file.path(root_dir, par_dirs[p])
@@ -164,6 +178,11 @@ for (exper in run_expers) {
       
     }
     
+    fileConn <- file(paste0(log_path, "_progress.txt"), "a")
+    writeLines(paste("--Finished writing ", p, "\n"), fileConn)
+    writeLines(paste("-------------------\n"), fileConn)
+    close(fileConn)
+    
   }
   
 
@@ -181,6 +200,8 @@ for (exper in run_expers) {
   writeLines(slpa_run_lines, con = fileConn)
   close(fileConn)
   
-
+  fileConn <- file(paste0(log_path, "_progress.txt"), "a")
+  writeLines(paste("Finished writing ", exper_string, "\n"), fileConn)
+  close(fileConn)
   
 }

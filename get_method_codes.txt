@@ -1,0 +1,18 @@
+mkdir methodFiles
+echo Downloading OSLOM files.
+cd methodFiles
+wget http://www.oslom.org/code/OSLOM2.tar.gz
+tar -xvzf OSLOM2.tar.gz
+cd ../
+echo Downloading SLPA files.
+cd methodFiles
+wget https://sites.google.com/site/communitydetectionslpa/GANXiS_v3.0.2.zip
+unzip -a GANXiS_v3.0.2.zip
+cd ../
+echo Downloading mutual3 files and compiling.
+cd methodFiles
+wget https://sites.google.com/site/andrealancichinetti/mutual3.tar.gz
+tar -xvzf mutual3.tar.gz
+cd mutual3
+make
+cd ../../

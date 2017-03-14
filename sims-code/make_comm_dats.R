@@ -14,7 +14,7 @@ run_expers <- c(1:length(total_expers))
 nreps <- 20
 
 # Set method names:
-methNames = c("ccme", "oslom", "slpa", "fast_greedy", "infomap", "walktrap", "ccme_fast")
+methNames = c("ccme", "oslom", "slpa", "fast_greedy", "infomap", "walktrap")
 
 # Fixed variable to call the "mutual" function
 
@@ -91,10 +91,22 @@ for (exper in run_expers) {
           }
 
           next_calc_line1 <- paste0("cd ", file.path(curr_dir_p_rep))
+          
+          # This chunk was from when I was using my modified mutual3, for Windows
+          # Added functionality to save within the c++ function
+          #next_calc_line2 <- paste0(mutual,
+          #                          paste0(meth, "_comms.dat "),
+          #                          paste0("truth_", meth, "_comms.dat "),
+          #                          paste0(meth, "_mutual.txt"))
+          
+          # This uses a kosherized iOS/Linux approach
+          # Basic mutual3 just prints the score
+          # The following saves the print to a .txt file through terminal
           next_calc_line2 <- paste0(mutual,
                                     paste0(meth, "_comms.dat "),
                                     paste0("truth_", meth, "_comms.dat "),
-                                    paste0(meth, "_mutual.txt"))
+                                    paste0("> ", meth, "_mutual.txt"))
+          
           next_calc_line3 <- paste0("cd ", "../../../../")
           calc_script_lines <- c(calc_script_lines,
                                  next_calc_line1,

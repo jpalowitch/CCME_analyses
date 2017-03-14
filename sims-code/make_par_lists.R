@@ -269,11 +269,9 @@ for (b in 1:nrun_r) {
   batch <- batches[[b]]
   batchname <- paste0("batch", b)
   
-  # Initializing batch files
-  sbmfn <- file.path(batch_script_dir, paste0("make-sbm-sims-", batchname))
-  rmethfn <- file.path(batch_script_dir, paste0("run_rmeth-", batchname))
-  file.create(paste0(c(sbmfn, rmethfn), ".txt"))
-  file.create(paste0(c(sbmfn, rmethfn), "_log.txt"))
+  # Naming and creating log file
+  sbmfn <- paste0("sims-results/run-code/batch-scripts/make-sbm-sims-batch", b)
+  file.create(paste0(sbmfn, "_log.txt"))
   
   # Writing on script to run sim batches
   fileConn <- file(paste0(sbmfn0, ".txt"), "a")
@@ -284,6 +282,11 @@ for (b in 1:nrun_r) {
              fileConn)
   writeLines(paste0("PID", b, "=$!"), fileConn)
   close(fileConn)
+  
+  # Naming and creating log file
+  rmethfn <- paste0("sims-results/run-code/batch-scripts/run_R_methods-batch", 
+                    b)
+  file.create(paste0(rmethfn, "_log.txt"))
    
   # Writing on script to run R methods
   fileConn <- file(paste0(rmethfn0, ".txt"), "a")
@@ -411,6 +414,8 @@ for (b in 1:nrun_slpa) {
                    "1> /dev/null",
                    "2>", paste0(slpawfn, "_log.txt"), "&"),
              fileConn)
+  # save the PID
+  writeLines(paste0("PID", b, "=$!"), fileConn)
   close(fileConn)
   
   # Writing batch scripts to run SLPA
@@ -431,7 +436,7 @@ for (b in 1:nrun_slpa) {
     writeLines(paste('touch', logfile), fileConn)
     
     # Run the run_script
-    writeLines(paste('bash', runfile, '1> /dev/null 2>', logfile, '&'),
+    writeLines(paste('bash', runfile, '1> /dev/null 2>', logfile),
                fileConn)
     
   }
@@ -449,3 +454,4 @@ fileConn <- file(ccmepathfn)
 writeLines(paste0(CCMEpath), con = fileConn)
 close(fileConn)
 
+cat("done with make_par_lists\n")
