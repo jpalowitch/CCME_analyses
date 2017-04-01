@@ -35,6 +35,10 @@ dcolors <- c(
 "#549E79", "#FFF69F", "#201625", "#72418F", "#BC23FF", "#99ADC0", "#3A2465", "#922329",
 "#5B4534", "#FDE8DC", "#404E55", "#0089A3", "#CB7E98", "#A4E804", "#324E72", "#6A3A4C")
 
+gg_color_hue <- function(n) {
+  hues = seq(15, 375, length = n + 1)
+  hcl(h = hues, l = 65, c = 100)[1:n]
+}
   
   # Color choices:
   # plot(rep(1:13, each = 8), rep(1:8, 13), col = dcolors, pch = 15, cex = 3)
@@ -99,7 +103,9 @@ plotResults = function(output, codeList, strengths = NULL, adj_names = NULL,
 	                       "sym" = as.integer(sym_ord[mship_df$comm]))
 	
 	# Inducing color choice
-	mship_df <- data.frame(mship_df, "col" = colPal[mship_df$comm])
+	#mship_df <- data.frame(mship_df, "col" = colPal[mship_df$comm])
+	ggcolpal <- gg_color_hue(length(unique(mship_df$comm)))
+	mship_df <- data.frame(mship_df, "col" = ggcolpal[mship_df$comm])
 	
 	# Randomize plotting
 	mship_df <- mship_df[sample(nrow(mship_df)), ]

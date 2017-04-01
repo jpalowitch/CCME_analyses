@@ -4,7 +4,7 @@ tonmi <- function(x, a) {
 
 makePerformancePlot <-  function (fn = NULL, meanMat, sdMat = NULL,
                                   legPos = "topright", xvals, tnmi = FALSE,
-                                  tnmi_a = 0.05,
+                                  tnmi_a = 0.05, bw = FALSE,
                                   legCex = 2, pchs = 1:nrow(meanMat),
                                   lwd = 1, legLwd = 2, yRange = NULL,
                                   cex = 1, new = TRUE, doLegend = TRUE,
@@ -45,9 +45,15 @@ makePerformancePlot <-  function (fn = NULL, meanMat, sdMat = NULL,
     
     if (new) {
       
+      if (bw) {
+        Col <- "#000000"
+      } else {
+        Col <- colPal[j]
+      }
+      
       meth = plot_names[j]
-      points(xvals, meanMat[meth, ], pch = pchs[j], cex = cex)
-      lines(xvals, meanMat[meth, ], lty = j + 1, lwd = lwd)
+      points(xvals, meanMat[meth, ], pch = pchs[j], cex = cex, col = Col)
+      lines(xvals, meanMat[meth, ], lty = j + 1, lwd = lwd, col = Col)
       if (tnmi) {
         abline(h = tonmi(0.95, tnmi_a), lwd = lwd)
         text(y = tonmi(0.95, tnmi_a), pos = 3, cex = cex.lab,
@@ -79,8 +85,14 @@ makePerformancePlot <-  function (fn = NULL, meanMat, sdMat = NULL,
   if (doLegend) {
     if (new) {
       
+      if (bw) {
+        legCols <- "black"
+      } else {
+        legCols <- colPal
+      }
+      
       legend(x = legPos, legend = plot_names, lty = 1 + 1:length(plot_names),
-             cex = legCex, lwd = legLwd, pch = pchs)
+             cex = legCex, lwd = legLwd, pch = pchs, col = legCols)
       
     } else {
     

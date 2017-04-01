@@ -7,6 +7,11 @@ total_expers <- readLines("sims-results/exper-names.txt")
 source("sims-code/sbm_funs3.R")
 source("mod_funs.R")
 
+gg_color_hue <- function(n) {
+  hues = seq(15, 375, length = n + 1)
+  hcl(h = hues, l = 65, c = 100)[1:n]
+}
+
 # Set method names:
 methNames = c("ccme", "oslom", "slpa", "fast_greedy", "walktrap", "infomap")
 
@@ -21,7 +26,7 @@ pchs <- c(14, 8, 3, 22, 24, 21)
 doMod <- FALSE
 
 # Re-get results?
-getResults <- TRUE
+getResults <- FALSE
 
 # Plot main text?
 main_text_plot <- FALSE
@@ -212,7 +217,7 @@ for (exper in plot_expers) {
   }
   
   # Color palette
-  colPal <- colPal[1:length(methNames)]
+  colPal <- gg_color_hue(length(methNames))
   
   source("makePerformancePlot.R")
   
