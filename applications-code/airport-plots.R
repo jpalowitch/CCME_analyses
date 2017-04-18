@@ -10,11 +10,17 @@ adj_options <- c(monthNames, "year")
 fnList = c(monthNames,"year")
 load(file.path(dataDir, "adjList_cleaned.RData"))
 
+### Specify if you want bw plots or not
+bw <- FALSE
+
 ### Specify whether or not to include plot titles
 plotTitles = FALSE
 
 ### Set filter size (i.e. minimum cluster size)
 filtSize = 1
+
+### Set plot point size
+cex.pnt <- 7
 
 ## Specify years
 load(file.path(dataDir, "dataInfo.RData"))
@@ -23,7 +29,10 @@ endYear = lastYear
 yL = endYear - startYear + 1
 
   
-
+gg_color_hue <- function(n) {
+  hues = seq(15, 375, length = n + 1)
+  hcl(h = hues, l = 65, c = 100)[1:n]
+}
 
 for (y in 1:yL) {
   
@@ -130,7 +139,9 @@ for (y in 1:yL) {
 			                       "sym" = as.integer(sym_ord[mship_df$comm]))
 			
 			# Inducing color choice
-			mship_df <- data.frame(mship_df, "col" = colPal[mship_df$comm])
+			#mship_df <- data.frame(mship_df, "col" = colPal[mship_df$comm])
+			ggcolpal <- gg_color_hue(length(unique(mship_df$comm)))
+			mship_df <- data.frame(mship_df, "col" = ggcolpal[mship_df$comm])
 			
 			# Randomize plotting
 			mship_df <- mship_df[sample(nrow(mship_df)), ]
@@ -140,10 +151,15 @@ for (y in 1:yL) {
 			
 			# Making map
 			mymap <- get_map(full_loc, maptype = "toner-lite")
-			pmap <- ggmap(mymap, extent = "device") + 
-			  geom_point(aes(x = lon, y = lat, colour = "black", shape = sym, size = 35),
-			             data = mship_df) + 
-			  guides(size = FALSE, colour = FALSE) + 
+			pmap <- ggmap(mymap, extent = "device")
+			if (bw) {
+			  pmap <- pmap + geom_point(aes(x = lon, y = lat, colour = "black", shape = sym),
+			                            data = mship_df, size = cex.pnt) 
+			} else {
+			  pmap <- pmap + geom_point(aes(x = lon, y = lat, colour = col, shape = sym),
+			                            data = mship_df, size = cex.pnt) 
+			 }
+			pmap <- pmap + guides(size = FALSE, colour = FALSE) + 
 			  labs(title = "my title") + scale_colour_identity() + scale_shape_identity() +
 			  labs(title = paste0(methname, ", ", toupper(fn), " ", seq(startYear, endYear)[y])) + 
 			  theme(title = element_text(size = 40))
