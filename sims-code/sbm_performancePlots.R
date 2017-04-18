@@ -26,7 +26,7 @@ pchs <- c(14, 8, 3, 22, 24, 21)
 doMod <- FALSE
 
 # Re-get results?
-getResults <- FALSE
+getResults <- TRUE
 
 # Plot main text?
 main_text_plot <- FALSE
@@ -223,11 +223,11 @@ for (exper in plot_expers) {
   
   # Some plot defaults
   cex.main <- 1
-  cex.lab <- 3.5
-  cex.axis <- 3.5
-  cex <- 3.5
-  legCex <- 3
-  lwd <- 3
+  cex.lab <- 4
+  cex.axis <- 4
+  cex <- 4
+  legCex <- 3.5
+  lwd <- 4
   
   if (exists("axis_par_string")) {
     xlab_string <- axis_par_string
