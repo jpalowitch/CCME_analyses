@@ -1,4 +1,4 @@
-wget "https://www.cs.cmu.edu/~./enron/enron_mail_20150507.tgz”
+wget https://www.cs.cmu.edu/~./enron/enron_mail_20150507.tgz
 tar -xvzf enron_mail_20150507.tgz
 Rscript enron-mineAndSave.R
 Rscript makeDirectedList.R
