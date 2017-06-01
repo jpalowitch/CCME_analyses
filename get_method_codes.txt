@@ -1,4 +1,17 @@
 mkdir methodFiles
+echo Downloading CCME fiels.
+cd methodFiles
+mkdir CCME
+cd CCME
+wget https://raw.githubusercontent.com/jpalowitch/CCME/master/CCME.R
+wget https://raw.githubusercontent.com/jpalowitch/CCME/master/auxiliary.R
+wget https://raw.githubusercontent.com/jpalowitch/CCME/master/extract.R
+wget https://raw.githubusercontent.com/jpalowitch/CCME/master/initialize.R
+wget https://raw.githubusercontent.com/jpalowitch/CCME/master/new_funs.cpp
+wget https://raw.githubusercontent.com/jpalowitch/CCME/master/overlap.R
+wget https://raw.githubusercontent.com/jpalowitch/CCME/master/pvalues.R
+wget https://raw.githubusercontent.com/jpalowitch/CCME/master/varpar.R
+cd ../../
 echo Downloading OSLOM files.
 cd methodFiles
 wget http://www.oslom.org/code/OSLOM2.tar.gz

@@ -1,8 +1,8 @@
 wget https://www.cs.cmu.edu/~./enron/enron_mail_20150507.tgz
 tar -xvzf enron_mail_20150507.tgz
-Rscript enron-mineAndSave.R
-Rscript makeDirectedList.R
-Rscript makeEdgeList.R
+Rscript applications-code/enron-mineAndSave.R
+Rscript applications-code/makeDirectedList.R
+Rscript applications-code/makeEdgeList.R
 Rscript applications-code/enron-write_OSLOM_SLPAw.R
 Rscript applications-code/enron-runScript.R
 bash applications-code/enron-oslom.txt
