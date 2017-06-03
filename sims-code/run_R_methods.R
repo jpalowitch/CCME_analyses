@@ -12,15 +12,13 @@ if (length(Args) < 2) {
   batch_name <- "0"
   first_exper <- 1
   last_exper <- 9
-  redrawSeeds <- FALSE
   runCCME <- FALSE
   runIGRAPH <- FALSE
 } else {
   batch_name <- Args[1]
   first_exper <- as.numeric(Args[2])
   last_exper <- as.numeric(Args[3])
-  redrawSeeds <- TRUE
-  runCCME <- TRUE
+  runCCME <- FALSE
   runIGRAPH <- TRUE
 }
 
@@ -144,6 +142,27 @@ for (exper in run_expers) {
                                           which(ig_results$membership == i))
           results$background <- setdiff(node_list, unlist(results$communities))
           save(results, file = file.path(curr_dir_p_rep, "fast_greedy.RData"))
+          
+        # WALKTRAP
+          
+          # Draw random seed and save
+          seedfn <- file.path(curr_dir_p_rep, "louvain_seed.txt")
+          if (!file.exists(seedfn)) {
+            seed_draw <- sample(1e6, 1)
+            writeLines(as.character(seed_draw), con = seedfn)
+          } else {
+            seed_draw <- as.integer(readLines(seedfn))
+          }
+          set.seed(seed_draw)
+          
+          # Formatting and saving results
+          ig_results <- cluster_louvain(G)
+          results <- results0
+          results$communities <- lapply(unique(ig_results$membership),
+                                        function (i) 
+                                          which(ig_results$membership == i))
+          results$background <- setdiff(node_list, unlist(results$communities))
+          save(results, file = file.path(curr_dir_p_rep, "louvain.RData"))
         
       }
       

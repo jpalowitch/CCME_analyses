@@ -13,20 +13,20 @@ gg_color_hue <- function(n) {
 }
 
 # Set method names:
-methNames = c("ccme", "oslom", "slpa", "fast_greedy", "walktrap", "infomap")
+methNames = c("ccme", "oslom", "slpa", "fast_greedy", "walktrap", "infomap", "louvain")
 
 # Set which methods to plot and their plot names
-plot_meths <- c(4:6, 2, 3, 1)
-plot_names <- c("FastGreedy", "Walktrap", "Infomap", "OSLOM", "SLPAw", "CCME")
+plot_meths <- c(4:7, 2, 3, 1)
+plot_names <- c("FastGreedy", "Walktrap", "Infomap", "GenLouvain", "OSLOM", "SLPAw", "CCME")
 
 # Set points
-pchs <- c(14, 8, 3, 22, 24, 21)
+pchs <- c(14, 8, 3, 22, 24, 21, 9)
 
 # Do mod?
 doMod <- FALSE
 
 # Re-get results?
-getResults <- TRUE
+getResults <- FALSE
 
 # Plot main text?
 main_text_plot <- FALSE
