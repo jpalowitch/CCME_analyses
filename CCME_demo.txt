@@ -1,0 +1,2 @@
+bash get_method_codes_demo.txt
+Rscript CCME_demo.R

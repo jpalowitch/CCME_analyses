@@ -1,31 +1,41 @@
+rm -r methodFiles
 mkdir methodFiles
-echo Downloading CCME fiels.
 cd methodFiles
+
+# Making CCME files
+echo Downloading CCME files.
 mkdir CCME
 cd CCME
 wget https://raw.githubusercontent.com/jpalowitch/CCME/master/CCME.R
-wget https://raw.githubusercontent.com/jpalowitch/CCME/master/auxiliary.R
-wget https://raw.githubusercontent.com/jpalowitch/CCME/master/extract.R
-wget https://raw.githubusercontent.com/jpalowitch/CCME/master/initialize.R
 wget https://raw.githubusercontent.com/jpalowitch/CCME/master/new_funs.cpp
-wget https://raw.githubusercontent.com/jpalowitch/CCME/master/overlap.R
-wget https://raw.githubusercontent.com/jpalowitch/CCME/master/pvalues.R
-wget https://raw.githubusercontent.com/jpalowitch/CCME/master/varpar.R
 cd ../../
+
+# Making OSLOM files
 echo Downloading OSLOM files.
 cd methodFiles
 wget http://www.oslom.org/code/OSLOM2.tar.gz
 tar -xvzf OSLOM2.tar.gz
-cd ../
+rm OSLOM2.tar.gz
+cd OSLOM2
+chmod 744 ./compile_all.sh
+./compile_all.sh
+cd ../../
+
+# Making SLPA files
 echo Downloading SLPA files.
 cd methodFiles
 wget https://sites.google.com/site/communitydetectionslpa/GANXiS_v3.0.2.zip
 unzip -a GANXiS_v3.0.2.zip
+rm GANXiS_v3.0.2.zip
+rm GANXiS_v1.0.zip
 cd ../
+
+# Making Mutual files
 echo Downloading mutual3 files and compiling.
 cd methodFiles
 wget https://sites.google.com/site/andrealancichinetti/mutual3.tar.gz
 tar -xvzf mutual3.tar.gz
+rm mutual3.tar.gz
 cd mutual3
 make
 cd ../../
