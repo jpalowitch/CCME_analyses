@@ -1,5 +1,7 @@
 Args = commandArgs(trailingOnly=TRUE)
 
+cat("making sbm sims\n")
+
 source("sims-code/sbm_funs3.R")
 
 total_expers <- readLines("sims-results/exper-names.txt")
@@ -8,9 +10,10 @@ if (length(Args) < 2) {
   batch_name <- "0"
   first_exper <- 1
   last_exper <- 9
-  redrawSeeds <- FALSE
-  writeOSLOM <- FALSE
-  runSBM <- FALSE
+  redrawSeeds <- TRUE
+  writeOSLOM <- TRUE
+  runSBM <- TRUE
+  removeRoot <- TRUE
 } else {
   batch_name <- Args[1]
   first_exper <- as.numeric(Args[2])
@@ -18,7 +21,10 @@ if (length(Args) < 2) {
   redrawSeeds <- TRUE
   writeOSLOM <- TRUE
   runSBM <- TRUE
+  removeRoot <- TRUE
 }
+
+cat("args are", Args, "\n")
 
 run_expers <- first_exper:last_exper
 
@@ -48,7 +54,12 @@ for (exper in run_expers) {
   
   # Finding the folder
   root_dir <- file.path("sims-results", exper_string)
-  if (!dir.exists(root_dir)) {dir.create(root_dir)}
+  if (removeRoot) {
+    unlink(root_dir, recursive = TRUE)
+  }
+  if (!dir.exists(root_dir)) {
+    dir.create(root_dir, recursive = TRUE)
+  }
   
   # Loading the parameters (change them with sims/sbm_sims/make_par_lists.R)
   load(paste0("sims-results/sbm-par-lists/", exper_string, ".RData"))
@@ -104,16 +115,16 @@ for (exper in run_expers) {
       if (runSBM) {
         
         # Draw random seed and save
-        if (redrawSeeds) {
+        seed_fn <- file.path(curr_dir_p_rep, "sbm_seed.txt")
+        if (!file.exists(seed_fn)) {
           seed_draw <- sample(1e6, 1)
           writeLines(as.character(seed_draw), 
                      con = file.path(curr_dir_p_rep, "sbm_seed.txt"))
           set.seed(seed_draw)
-        } else {
-          set.seed(as.numeric(readLines(file.path(curr_dir_p_rep, 
-                                                  "sbm_seed.txt")
-                                        )))
         }
+        set.seed(as.numeric(readLines(file.path(curr_dir_p_rep, 
+                                                  "sbm_seed.txt")
+                                      )))
         
         sbm <- make_sbm(par_list_p)
 
@@ -131,6 +142,13 @@ for (exper in run_expers) {
                     col.names = FALSE)
 
         gc()
+        
+        # Writing in GML format
+        G_igraph <- graph.edgelist(as.matrix(sbm$edge_list[ , 1:2]), 
+                                   directed = FALSE)
+        E(G_igraph)$weight <- sbm$edge_list$weight
+        write_graph(G_igraph, file = file.path(curr_dir_p_rep, "network.gml"),
+                    format = "gml")
 
       } 
 
