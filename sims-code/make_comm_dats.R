@@ -14,7 +14,7 @@ run_expers <- c(1:length(total_expers))
 nreps <- 20
 
 # Set method names:
-methNames = c("ccme", "oslom", "slpa", "fast_greedy", "infomap", "walktrap", "louvain")
+methNames = c("ccme", "oslom", "slpa", "fast_greedy", "infomap", "walktrap", "louvain", "graphtool")
 
 # Fixed variable to call the "mutual" function
 
