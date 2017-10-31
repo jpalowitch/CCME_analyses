@@ -51,9 +51,10 @@ for (exper in run_expers) {
     
     for (rep in 1:nreps) {
       
-      cat("exper", exper, "p", p, "rep", rep, "\n")
+      cat(exper_string, "p", p, "rep", rep, "\n")
       
-      if (rep == 1) {
+      #if (rep == 1) {
+      if (rep <= 5) {
       
         # Loading data
         curr_dir_p_rep <- file.path(curr_dir_p, rep)

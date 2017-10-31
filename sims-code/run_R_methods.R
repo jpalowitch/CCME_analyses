@@ -11,14 +11,16 @@ if (length(Args) < 2) {
   batch_name <- "0"
   first_exper <- 1
   last_exper <- 9
-  runCCME <- TRUE
-  runIGRAPH <- TRUE
+  runCCME <- FALSE
+  runIGRAPH <- FALSE
+  run_graphtool <- TRUE
 } else {
   batch_name <- Args[1]
   first_exper <- as.numeric(Args[2])
   last_exper <- as.numeric(Args[3])
-  runCCME <- TRUE
-  runIGRAPH <- TRUE
+  runCCME <- FALSE
+  runIGRAPH <- FALSE
+  run_graphtool <- TRUE
 }
 
 run_expers <- first_exper:last_exper
@@ -71,132 +73,137 @@ for (exper in run_expers) {
         
       }
       
+      # Initiating blank results file
+      results0 <- list("communities" = NULL,
+                         "background" = NULL)
+      
       if (runIGRAPH) {
         
         # Formatting the SBM
         G <- graph.edgelist(as.matrix(sbm$edge_list[ , c(1:2)]), directed = FALSE)
         E(G)$weight <- sbm$edge_list$weight
-        results0 <- list("communities" = NULL,
-                         "background" = NULL)
         node_list <- unique(as.vector(unlist(sbm$edge_list[ , c(1:2)])))
-        
+      
         # WALKTRAP
-        
-          # Draw random seed and save
-          seedfn <- file.path(curr_dir_p_rep, "walktrap_seed.txt")
-          if (!file.exists(seedfn)) {
-            seed_draw <- sample(1e6, 1)
-            writeLines(as.character(seed_draw), con = seedfn)
-          } else {
-            seed_draw <- as.integer(readLines(seedfn))
-          }
-          set.seed(seed_draw)
-            
-          # Formatting and saving results
-          timer <- proc.time()[3]
-          ig_results <- cluster_walktrap(G)
-          timer <- proc.time()[3] - timer
-          results <- results0
-          results$communities <- lapply(unique(ig_results$membership),
-                                        function (i) 
-                                          which(ig_results$membership == i))
-          results$background <- setdiff(node_list, unlist(results$communities))
-          save(results, timer, file = file.path(curr_dir_p_rep, "walktrap.RData"))
-        
+      
+        # Draw random seed and save
+        seedfn <- file.path(curr_dir_p_rep, "walktrap_seed.txt")
+        if (!file.exists(seedfn)) {
+          seed_draw <- sample(1e6, 1)
+          writeLines(as.character(seed_draw), con = seedfn)
+        } else {
+          seed_draw <- as.integer(readLines(seedfn))
+        }
+        set.seed(seed_draw)
+          
+        # Formatting and saving results
+        timer <- proc.time()[3]
+        ig_results <- cluster_walktrap(G)
+        timer <- proc.time()[3] - timer
+        results <- results0
+        results$communities <- lapply(unique(ig_results$membership),
+                                      function (i) 
+                                        which(ig_results$membership == i))
+        results$background <- setdiff(node_list, unlist(results$communities))
+        save(results, timer, file = file.path(curr_dir_p_rep, "walktrap.RData"))
+      
         # INFOMAP
-          
-          # Draw random seed and save
-          seedfn <- file.path(curr_dir_p_rep, "infomap_seed.txt")
-          if (!file.exists(seedfn)) {
-            seed_draw <- sample(1e6, 1)
-            writeLines(as.character(seed_draw), con = seedfn)
-          } else {
-            seed_draw <- as.integer(readLines(seedfn))
-          }
-          set.seed(seed_draw)
-          
-          # Formatting and saving results
-          timer <- proc.time()[3]
-          ig_results <- cluster_infomap(G)
-          timer <- proc.time()[3] - timer
-          results <- results0
-          results$communities <- lapply(unique(ig_results$membership),
-                                        function (i) 
-                                          which(ig_results$membership == i))
-          results$background <- setdiff(node_list, unlist(results$communities))
-          save(results, timer, file = file.path(curr_dir_p_rep, "infomap.RData"))
         
+        # Draw random seed and save
+        seedfn <- file.path(curr_dir_p_rep, "infomap_seed.txt")
+        if (!file.exists(seedfn)) {
+          seed_draw <- sample(1e6, 1)
+          writeLines(as.character(seed_draw), con = seedfn)
+        } else {
+          seed_draw <- as.integer(readLines(seedfn))
+        }
+        set.seed(seed_draw)
+        
+        # Formatting and saving results
+        timer <- proc.time()[3]
+        ig_results <- cluster_infomap(G)
+        timer <- proc.time()[3] - timer
+        results <- results0
+        results$communities <- lapply(unique(ig_results$membership),
+                                      function (i) 
+                                        which(ig_results$membership == i))
+        results$background <- setdiff(node_list, unlist(results$communities))
+        save(results, timer, file = file.path(curr_dir_p_rep, "infomap.RData"))
+      
         # FAST GREEDY
-          
-          # Draw random seed and save
-          seedfn <- file.path(curr_dir_p_rep, "fast_greedy_seed.txt")
-          if (!file.exists(seedfn)) {
-            seed_draw <- sample(1e6, 1)
-            writeLines(as.character(seed_draw), con = seedfn)
-          } else {
-            seed_draw <- as.integer(readLines(seedfn))
-          }
-          set.seed(seed_draw)
-          
-          # Formatting and saving results
-          timer <- proc.time()[3]
-          ig_results <- cluster_fast_greedy(G)
-          timer <- proc.time()[3] - timer
-          results <- results0
-          results$communities <- lapply(unique(ig_results$membership),
-                                        function (i) 
-                                          which(ig_results$membership == i))
-          results$background <- setdiff(node_list, unlist(results$communities))
-          save(results, timer, file = file.path(curr_dir_p_rep, "fast_greedy.RData"))
-          
+        
+        # Draw random seed and save
+        seedfn <- file.path(curr_dir_p_rep, "fast_greedy_seed.txt")
+        if (!file.exists(seedfn)) {
+          seed_draw <- sample(1e6, 1)
+          writeLines(as.character(seed_draw), con = seedfn)
+        } else {
+          seed_draw <- as.integer(readLines(seedfn))
+        }
+        set.seed(seed_draw)
+        
+        # Formatting and saving results
+        timer <- proc.time()[3]
+        ig_results <- cluster_fast_greedy(G)
+        timer <- proc.time()[3] - timer
+        results <- results0
+        results$communities <- lapply(unique(ig_results$membership),
+                                      function (i) 
+                                        which(ig_results$membership == i))
+        results$background <- setdiff(node_list, unlist(results$communities))
+        save(results, timer, file = file.path(curr_dir_p_rep, "fast_greedy.RData"))
+        
         # LOUVAIN
+        
+        # Draw random seed and save
+        seedfn <- file.path(curr_dir_p_rep, "louvain_seed.txt")
+        if (!file.exists(seedfn)) {
+          seed_draw <- sample(1e6, 1)
+          writeLines(as.character(seed_draw), con = seedfn)
+        } else {
+          seed_draw <- as.integer(readLines(seedfn))
+        }
+        set.seed(seed_draw)
+        
+        # Formatting and saving results
+        timer <- proc.time()[3]
+        ig_results <- cluster_louvain(G)
+        timer <- proc.time()[3] - timer
+        results <- results0
+        results$communities <- lapply(unique(ig_results$membership),
+                                      function (i) 
+                                        which(ig_results$membership == i))
+        results$background <- setdiff(node_list, unlist(results$communities))
+        save(results, timer, file = file.path(curr_dir_p_rep, "louvain.RData"))
+      }
           
-          # Draw random seed and save
-          seedfn <- file.path(curr_dir_p_rep, "louvain_seed.txt")
-          if (!file.exists(seedfn)) {
-            seed_draw <- sample(1e6, 1)
-            writeLines(as.character(seed_draw), con = seedfn)
-          } else {
-            seed_draw <- as.integer(readLines(seedfn))
-          }
-          set.seed(seed_draw)
-          
-          # Formatting and saving results
-          timer <- proc.time()[3]
-          ig_results <- cluster_louvain(G)
-          timer <- proc.time()[3] - timer
-          results <- results0
-          results$communities <- lapply(unique(ig_results$membership),
-                                        function (i) 
-                                          which(ig_results$membership == i))
-          results$background <- setdiff(node_list, unlist(results$communities))
-          save(results, timer, file = file.path(curr_dir_p_rep, "louvain.RData"))
-          
+      if (run_graphtool) {
+        
         # GRAPHTOOL
-          
-          # Draw random seed and save
-          seedfn <- file.path(curr_dir_p_rep, "graphtool_seed.txt")
-          if (!file.exists(seedfn)) {
-            seed_draw <- sample(1e6, 1)
-            writeLines(as.character(seed_draw), con = seedfn)
-          } else {
-            seed_draw <- as.integer(readLines(seedfn))
-          }
-          set.seed(seed_draw)
-          
-          # Formatting and saving results
-          timer <- proc.time()[3]
-          system(paste("/usr/bin/python",
-                       "fit_sbm.py",
-                       file.path(curr_dir_p_rep, "network.gml"),
-                       file.path(curr_dir_p_rep, "network_gtMemship.dat")))
-          timer <- proc.time()[3] - timer
-          membership <- as.integer(readLines(file.path(curr_dir_p_rep, 
-                                                       "network_gtMemship.dat"))) + 1
-          results <- results0
-          results$communities <- lapply(1:max(membership), function (j) which(membership == j))
-          results$background <- integer(0)
-          save(results, timer, file = file.path(curr_dir_p_rep, "graphtool.RData"))
+        
+        # Draw random seed and save
+        seedfn <- file.path(curr_dir_p_rep, "graphtool_seed.txt")
+        if (!file.exists(seedfn)) {
+          seed_draw <- sample(1e6, 1)
+          writeLines(as.character(seed_draw), con = seedfn)
+        } else {
+          seed_draw <- as.integer(readLines(seedfn))
+        }
+        set.seed(seed_draw)
+        
+        # Formatting and saving results
+        timer <- proc.time()[3]
+        system(paste("/usr/bin/python",
+                     "fit_sbm.py",
+                     file.path(curr_dir_p_rep, "network.gml"),
+                     file.path(curr_dir_p_rep, "network_gtMemship.dat")))
+        timer <- proc.time()[3] - timer
+        membership <- as.integer(readLines(file.path(curr_dir_p_rep, 
+                                                     "network_gtMemship.dat"))) + 1
+        results <- results0
+        results$communities <- lapply(1:max(membership), function (j) which(membership == j))
+        results$background <- integer(0)
+        save(results, timer, file = file.path(curr_dir_p_rep, "graphtool.RData"))
         
       }
       
