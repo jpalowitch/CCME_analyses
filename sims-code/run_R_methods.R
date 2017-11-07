@@ -194,7 +194,7 @@ for (exper in run_expers) {
         # Formatting and saving results
         timer <- proc.time()[3]
         system(paste("/usr/bin/python",
-                     "fit_sbm.py",
+                     "fit_sbm_weighted.py",
                      file.path(curr_dir_p_rep, "network.gml"),
                      file.path(curr_dir_p_rep, "network_gtMemship.dat")))
         timer <- proc.time()[3] - timer
