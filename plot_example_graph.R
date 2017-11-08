@@ -3,8 +3,10 @@ library(Matrix)
 
 # Reading in the data
 datadir <- 'sims-results/experiment6/90/1/'
-fn <- file.path(datadir, 'network.gml')
-g <- read_graph(fn, format = 'gml')
+fn <- file.path(datadir, 'network.csv')
+edgelist <- read.table(fn, sep=',')
+g <- graph.edgelist(as.matrix(edgelist[, 1:2]), directed=FALSE)
+E(g)$weight <- edgelist[, 3]
 
 # Louvain gets the correct membership perfectly
 set.seed(12345)
@@ -17,14 +19,14 @@ cat("NMI between mod and sbm:\n")
 show(compare(sbm_clustering, mod_clustering, method = "nmi"))
 
 # Averaging community-wise edge counts/edge weights/mod matrix
-K <- max(clustering)
+K <- max(mod_clustering)
 twom <- sum(strength(g))
 adjMat <- get.adjacency(g, attr="weight")
 avgEdgeCount <- avgEdge <- sumEdge <- sumMod <- matrix(0, K, K)
 for (i in 1:K) {
-  commi <- which(clustering == i)
+  commi <- which(mod_clustering == i)
   for (j in 1:K) {
-    commj <- which(clustering == j)
+    commj <- which(mod_clustering == j)
     avgEdgeCount[i, j] <- mean(adjMat[commi, commj] > 0)
     sumEdge[i, j] <- sum(adjMat[commi, commj])
     avgEdge[i, j] <- mean(adjMat[commi, commj])
@@ -33,7 +35,7 @@ for (i in 1:K) {
 
 degs <- strength(g)
 twom <- sum(degs)
-dC <- tapply(degs, clustering, sum)
+dC <- tapply(degs, mod_clustering, sum)
 modMat <- sumEdge - tcrossprod(dC) / twom
 
 cat("Modularity matrix:\n")

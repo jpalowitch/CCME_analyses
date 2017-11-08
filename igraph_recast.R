@@ -4,8 +4,8 @@ igraph_recast <- function (el, membership = NULL) {
   
   nodecols <- c("node1", "node2")
   node_el <- el[, nodecols]
-  N <- length(unique(as.vector(node_el)))
-  order_seen <- as.vector(t(node_el))
+  order_seen <- as.vector(t(as.matrix(node_el)))
+  N <- length(unique(order_seen))
   lookup <- integer(N)
   lookup[unique(order_seen)] <- 1:N
   order_seen2 <- lookup[order_seen]

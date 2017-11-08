@@ -67,13 +67,20 @@ for (exper in run_expers) {
             found_nodes <- unique(unlist(results$communities))
             
             if (length(found_nodes) > 0) {
+              
+              truth_list <- sbm$truth$communities
+              if (meth == "graphtool") {
+                load("ig_lookup.RData")
+                lapply(truth_list, function (C) ig_lookup[C])
+                rm(ig_lookup)
+              }
             
-              comm_nodes <- unique(unlist(sbm$truth$communities))
+              comm_nodes <- unique(unlist(truth_list))
               nmi_nodes <- intersect(comm_nodes, found_nodes)
               
               # Getting nmi results
               filter_nmi <- function (comm){intersect(comm, nmi_nodes)}
-              nmi_truth <- lapply(sbm$truth$communities, filter_nmi)
+              nmi_truth <- lapply(truth_list, filter_nmi)
               nmi_found <- lapply(results$communities, filter_nmi)
               
               # saving

@@ -149,19 +149,19 @@ for (exper in run_expers) {
         E(G_igraph)$weight <- sbm$edge_list$weight
         write_graph(G_igraph, file = file.path(curr_dir_p_rep, "network.gml"),
                     format = "gml")
-        
+       
         # Writing in csv format
-        write.table(sbm$edge_list, sep=',',
+        G_igraph_recast <- igraph_recast(sbm$edge_list)
+        weighted_edgelist_recast <- cbind(G_igraph_recast$edgelist,
+                                          sbm$edge_list$weight)
+        write.table(weighted_edgelist_recast, sep=',',
                     file = file.path(curr_dir_p_rep, "network.csv"),
                     row.names = FALSE,
                     col.names = FALSE)
+        ig_lookup <- G_igraph_recast$lookup
+        save(ig_lookup, file = file.path(curr_dir_p_rep, "ig_lookup.RData"))
         
-        # Saving membership in txt format
-        membership <- unlist(sbm$truth$memberships)
-        G_igraph_recast <- igraph_recast(sbm$edge_list, membership)
-        write.table(G_igraph_recast
-        writeLines(as.character(membership), 
-                   con=file.path(curr_dir_p_rep, "membership.dat"))
+ 
 
       } 
 

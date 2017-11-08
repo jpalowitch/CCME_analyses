@@ -189,14 +189,14 @@ for (exper in run_expers) {
         } else {
           seed_draw <- as.integer(readLines(seedfn))
         }
-        set.seed(seed_draw)
         
         # Formatting and saving results
         timer <- proc.time()[3]
         system(paste("/usr/bin/python",
                      "fit_sbm_weighted.py",
                      file.path(curr_dir_p_rep, "network.gml"),
-                     file.path(curr_dir_p_rep, "network_gtMemship.dat")))
+                     file.path(curr_dir_p_rep, "network_gtMemship.dat"),
+                     seed_draw))
         timer <- proc.time()[3] - timer
         membership <- as.integer(readLines(file.path(curr_dir_p_rep, 
                                                      "network_gtMemship.dat"))) + 1
