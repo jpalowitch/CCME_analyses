@@ -16,7 +16,24 @@ mod_clustering <- cluster_result$membership
 # Loading in sbm_clustering and comparing
 sbm_clustering <- readLines("sbm_clustering.dat") %>% as.numeric
 cat("NMI between mod and sbm:\n")
-show(compare(sbm_clustering, mod_clustering, method = "nmi"))
+show(compare(sbm_clustering, mod_clustering, method="nmi"))
+
+# Loading lookup and truth
+load(file.path(datadir, "ig_lookup.RData"))
+load(file.path(datadir, "sbm.RData"))
+truth_list <- sbm$truth$communities
+truth_list_recast <- lapply(truth_list, function (C) ig_lookup[C])
+
+# Calculating normalized mutual information
+truth_list_recast_string <- unlist(lapply(truth_list_recast, paste, collapse = " "))
+sbm_clustering_list <- lapply(0:max(sbm_clustering), function (k) which(sbm_clustering == k))
+sbm_clustering_list_string <- unlist(lapply(sbm_clustering_list, paste, collapse = " "))
+writeLines(truth_list_recast_string, "example_truth.dat")
+writeLines(sbm_clustering_list_string, "example_sbm.dat")
+system(paste("methodFiles/mutual3/mutual",
+             "example_truth.dat",
+             "example_sbm.dat"))
+
 
 # Averaging community-wise edge counts/edge weights/mod matrix
 K <- max(mod_clustering)

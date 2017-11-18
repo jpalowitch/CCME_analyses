@@ -8,7 +8,7 @@ makePerformancePlot <-  function (fn = NULL, meanMat, sdMat = NULL,
                                   legCex = 2, pchs = 1:nrow(meanMat),
                                   lwd = 1, legLwd = 2, yRange = NULL,
                                   cex = 1, new = TRUE, doLegend = TRUE,
-                                  xRange, plotFile = TRUE,
+                                  xRange, plotFile = TRUE, leg_ncol = 1,
                                   ... ) {
   
   # Calculating plot limits
@@ -92,7 +92,7 @@ makePerformancePlot <-  function (fn = NULL, meanMat, sdMat = NULL,
       }
       
       legend(x = legPos, legend = plot_names, lty = 1 + 1:length(plot_names),
-             cex = legCex, lwd = legLwd, pch = pchs, col = legCols)
+             cex = legCex, lwd = legLwd, pch = pchs, col = legCols, ncol = leg_ncol)
       
     } else {
     
@@ -103,7 +103,7 @@ makePerformancePlot <-  function (fn = NULL, meanMat, sdMat = NULL,
            lwd = lwd,
            pt.cex = cex,
            pch = 1:length(plot_names),
-           cex = legCex)
+           cex = legCex, ncol = leg_ncol)
       
     }
   }

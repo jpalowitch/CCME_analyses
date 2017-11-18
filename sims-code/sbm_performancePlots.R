@@ -17,7 +17,7 @@ methNames = c("ccme", "oslom", "slpa", "fast_greedy", "walktrap", "infomap", "lo
 
 # Set which methods to plot and their plot names
 plot_meths <- c(8, 4:7, 2, 3, 1)
-plot_names <- c("SBM", "FastGreedy", "Walktrap", "Infomap", "GenLouvain", "OSLOM", "SLPAw", "CCME")
+plot_names <- c("WeightedGT", "FastGreedy", "Walktrap", "Infomap", "Louvain", "OSLOM", "SLPAw", "CCME")
 
 # Set points
 pchs <- c(14, 8, 3, 22, 24, 21, 9, 10)
@@ -26,7 +26,7 @@ pchs <- c(14, 8, 3, 22, 24, 21, 9, 10)
 doMod <- FALSE
 
 # Re-get results?
-getResults <- TRUE
+getResults <- FALSE
 
 # Plot main text?
 main_text_plot <- FALSE
@@ -539,5 +539,58 @@ dummy <- makePerformancePlot(meanMat = combPlot1[["experiment9"]]$typeII_means,
                              cex.axis = cex.axis,
                              #main = "w/Background & Overlap Nodes")
                              main = "D-3")
+
+dev.off()
+
+# New vars for smaller plot
+legCex <- 2
+ylabVar <- "oNMI"
+
+png("sims-results/combined_plot_row1_unscaled.png", width = 1500, height = 500)
+par(mfrow = c(1, 3),
+    oma = rep(0, 4),
+    mar = c(11, 11, 6, 4),
+    mgp = c(6, 2, 0))
+
+# First row
+
+dummy <- makePerformancePlot(meanMat = combPlot1[["experiment4"]]$nmi_means, 
+                             plotFile = FALSE, doLegend = TRUE, 
+                             xvals = combPlot1[["experiment4"]]$paramVec,
+                             xRange = combPlot1[["experiment4"]]$xRange,
+                             yRange = c(0, 1),
+                             main = "A-1",
+                             xlab = combPlot1[["experiment4"]]$xlab_string, 
+                             tnmi = FALSE, ylab = ylabVar, leg_ncol = 2,
+                             legPos = "bottomright", legCex = legCex,
+                             lwd = lwd, cex = cex, pchs = pchs, 
+                             cex.main = cex.main, cex.lab = cex.lab, 
+                             cex.axis = cex.axis)
+
+dummy <- makePerformancePlot(meanMat = combPlot1[["experiment5"]]$nmi_means, 
+                             plotFile = FALSE, doLegend = FALSE, 
+                             xvals = combPlot1[["experiment5"]]$paramVec,
+                             xRange = combPlot1[["experiment5"]]$xRange,
+                             yRange = c(0, 1),
+                             main = "A-2",
+                             xlab = combPlot1[["experiment5"]]$xlab_string, 
+                             tnmi = FALSE, ylab = ylabVar, leg_ncol = 2,
+                             legPos = "bottomright", legCex = legCex,
+                             lwd = lwd, cex = cex, pchs = pchs, 
+                             cex.main = cex.main, cex.lab = cex.lab, 
+                             cex.axis = cex.axis)
+
+dummy <- makePerformancePlot(meanMat = combPlot1[["experiment6"]]$nmi_means, 
+                             plotFile = FALSE, doLegend = FALSE, 
+                             xvals = combPlot1[["experiment6"]]$paramVec,
+                             xRange = combPlot1[["experiment6"]]$xRange,
+                             yRange = c(0, 1),
+                             main = "A-3",
+                             xlab = combPlot1[["experiment6"]]$xlab_string, 
+                             tnmi = FALSE, ylab = ylabVar, leg_ncol = 2,
+                             legPos = "bottomright", legCex = legCex,
+                             lwd = lwd, cex = cex, pchs = pchs, 
+                             cex.main = cex.main, cex.lab = cex.lab, 
+                             cex.axis = cex.axis)
 
 dev.off()

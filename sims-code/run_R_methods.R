@@ -11,15 +11,15 @@ if (length(Args) < 2) {
   batch_name <- "0"
   first_exper <- 1
   last_exper <- 9
-  runCCME <- FALSE
-  runIGRAPH <- FALSE
+  runCCME <- TRUE
+  runIGRAPH <- TRUE
   run_graphtool <- TRUE
 } else {
   batch_name <- Args[1]
   first_exper <- as.numeric(Args[2])
   last_exper <- as.numeric(Args[3])
-  runCCME <- FALSE
-  runIGRAPH <- FALSE
+  runCCME <- TRUE
+  runIGRAPH <- TRUE
   run_graphtool <- TRUE
 }
 
@@ -75,7 +75,7 @@ for (exper in run_expers) {
       
       # Initiating blank results file
       results0 <- list("communities" = NULL,
-                         "background" = NULL)
+                       "background" = NULL)
       
       if (runIGRAPH) {
         
@@ -194,7 +194,7 @@ for (exper in run_expers) {
         timer <- proc.time()[3]
         system(paste("/usr/bin/python",
                      "fit_sbm_weighted.py",
-                     file.path(curr_dir_p_rep, "network.gml"),
+                     file.path(curr_dir_p_rep, "network.csv"),
                      file.path(curr_dir_p_rep, "network_gtMemship.dat"),
                      seed_draw))
         timer <- proc.time()[3] - timer

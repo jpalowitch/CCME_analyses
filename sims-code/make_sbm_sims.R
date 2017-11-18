@@ -3,7 +3,7 @@ Args = commandArgs(trailingOnly=TRUE)
 cat("making sbm sims\n")
 
 source("sims-code/sbm_funs3.R")
-
+source("igraph_recast.R")
 total_expers <- readLines("sims-results/exper-names.txt")
 
 if (length(Args) < 2) {

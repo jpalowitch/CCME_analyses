@@ -10,7 +10,7 @@ total_expers <- readLines("sims-results/exper-names.txt")
 if (length(Args) < 2) {
   batch_name <- "0"
   first_exper <- 1
-  last_exper <- 9
+  last_exper <- 7
   runCCME <- TRUE
   runIGRAPH <- TRUE
 } else {

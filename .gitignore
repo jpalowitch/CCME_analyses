@@ -20,3 +20,5 @@ CCME_analyses_test2.Rproj
 demo_plot.png
 sbm_clustering.dat
 example_graph_clustering.dat
+example_sbm.dat
+example_truth.dat

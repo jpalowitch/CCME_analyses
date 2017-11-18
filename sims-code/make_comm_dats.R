@@ -70,8 +70,8 @@ for (exper in run_expers) {
               
               truth_list <- sbm$truth$communities
               if (meth == "graphtool") {
-                load("ig_lookup.RData")
-                lapply(truth_list, function (C) ig_lookup[C])
+                load(file.path(curr_dir_p_rep, "ig_lookup.RData"))
+                truth_list <- lapply(truth_list, function (C) ig_lookup[C])
                 rm(ig_lookup)
               }
             

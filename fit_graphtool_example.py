@@ -7,7 +7,7 @@ g = load_graph_from_csv(fn, directed = False,
                         eprop_types = ['double'], 
                         eprop_names = ['weight'])
 N = g.num_vertices()
-numpy.random.seed(12345)
+numpy.random.seed(953170)
 state = minimize_blockmodel_dl(g, state_args = dict(recs=[g.ep.weight],
                                                     rec_types = ["real-exponential"]))
 blocks = state.get_blocks()
